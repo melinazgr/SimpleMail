@@ -3,9 +3,13 @@ import java.net.*;
 import java.util.Scanner;
 
 public class Main {
-    public static void main (String[] args) throws IOException{
+    public static void main(String[] argv) throws IOException {
         Socket s = new Socket();
         String host = "127.0.0.1";
+        int port = 5000;
+
+        String helpText = "Usage: java Main [-address <IP address>]\n" +
+                "                 [-port]\n";
 
         InetAddress localAddress = null;
         InetAddress remoteAddress = null;
@@ -14,15 +18,48 @@ public class Main {
         BufferedReader br = null;
 
         try {
-            s.connect(new InetSocketAddress(host, 5000));
+            boolean addressSet = false;
+            boolean portSet = false;
+
+             for (int i = 0; i < argv.length; i++) {
+                if (argv[i].equals("-address")) {
+                    i++;
+                    if (i >= argv.length) {
+                        throw new Exception("Missing address");
+                    }
+                    host = argv[i];
+                    addressSet = true;
+
+                } else if (argv[i].equals("-port")) {
+                    i++;
+                    if (i >= argv.length) {
+                        throw new Exception("Missing port");
+                    }
+                    port = Integer.parseInt(argv[i]);
+
+                    portSet = true;
+
+                } else if (argv[i].equals("-help")) {
+                    System.out.println(helpText);
+                    System.exit(1);
+                }else {
+                    throw new Exception(helpText);
+                }
+            }
+
+        } catch (Exception e) {
+            System.out.println(helpText);
+            System.exit(1);
+        }
+
+        try {
+            s.connect(new InetSocketAddress(host, port));
             localAddress = s.getLocalAddress();
             remoteAddress = s.getInetAddress();
 
             pw = new PrintWriter(s.getOutputStream(), true);
             br = new BufferedReader(new InputStreamReader(s.getInputStream()));
-        }
-
-        catch (UnknownHostException e){
+        } catch (UnknownHostException e) {
             System.err.println("Unknown host: " + host);
             System.exit(1);
 
@@ -35,7 +72,7 @@ public class Main {
         Scanner scanner = new Scanner(System.in);
         String message = null;
 
-        do{
+        do {
             //        String message = "GET / HTTP/1.1\r\n\r\n";
 
             message = scanner.next();
@@ -46,10 +83,11 @@ public class Main {
             response = br.readLine();
             System.out.println("Server : " + response);
         }
-        while(!message.startsWith("bye"));
+        while (!message.startsWith("bye"));
 
         pw.close();
         br.close();
         s.close();
     }
+
 }
