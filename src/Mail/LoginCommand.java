@@ -38,6 +38,11 @@ public class LoginCommand extends Command{
     }
 
 
+    @Override
+    public CommandType getType() {
+        return CommandType.Login;
+    }
+
     public void parsePacket(BufferedReader in) throws IOException {
 
         String line = (String)in.readLine();

@@ -38,6 +38,12 @@ public class RegisterCommand extends Mail.Command {
     }
 
 
+    @Override
+    public CommandType getType() {
+        return CommandType.Register;
+
+    }
+
     public void parsePacket(BufferedReader in) throws IOException {
 
         String line = (String)in.readLine();

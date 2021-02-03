@@ -1,5 +1,8 @@
 package MailClient;
 
+import Mail.LogoutCommand;
+import Mail.RegisterCommand;
+
 import java.io.*;
 import java.net.*;
 import java.util.Scanner;
@@ -71,21 +74,42 @@ public class Main {
         System.out.println("local: " + localAddress + " : " + s.getLocalPort());
         System.out.println("remote: " + remoteAddress);
 
-        Scanner scanner = new Scanner(System.in);
-        String message = null;
+//        Scanner scanner = new Scanner(System.in);
+//        String message = null;
+//
+//        do {
+//
+//            message = scanner.next();
+//            pw.println(message);
+//
+//            String response;
+//
+//            response = br.readLine();
+//            System.out.println("Server : " + response);
+//        }
+//        while (!message.startsWith("bye"));
+
+        RegisterCommand c1 = new RegisterCommand();
+        LogoutCommand l = new LogoutCommand();
+
+        // todo from scanner
+        c1.username = "Melina";
+        c1.password = "12345";
+
+        pw.print(c1.createPacket());
+        pw.flush();
+        pw.print(l.createPacket());
+        pw.flush();
+
+        String response;
 
         do {
-            //        String message = "GET / HTTP/1.1\r\n\r\n";
-
-            message = scanner.next();
-            pw.println(message);
-
-            String response;
-
             response = br.readLine();
             System.out.println("Server : " + response);
         }
-        while (!message.startsWith("bye"));
+        while (!response.startsWith("exit"));
+
+
 
         pw.close();
         br.close();
