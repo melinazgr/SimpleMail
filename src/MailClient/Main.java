@@ -1,7 +1,9 @@
 package MailClient;
 
+import Mail.Command;
 import Mail.LogoutRequest;
 import Mail.RegisterRequest;
+import Mail.RegisterResponse;
 
 import java.io.*;
 import java.net.*;
@@ -18,8 +20,8 @@ public class Main {
         InetAddress localAddress = null;
         InetAddress remoteAddress = null;
 
-        PrintWriter pw = null;
-        BufferedReader br = null;
+        PrintWriter out = null;
+        BufferedReader in = null;
 
         try {
             boolean addressSet = false;
@@ -61,8 +63,8 @@ public class Main {
             localAddress = s.getLocalAddress();
             remoteAddress = s.getInetAddress();
 
-            pw = new PrintWriter(s.getOutputStream(), true);
-            br = new BufferedReader(new InputStreamReader(s.getInputStream()));
+            out = new PrintWriter(s.getOutputStream(), true);
+            in = new BufferedReader(new InputStreamReader(s.getInputStream()));
         } catch (UnknownHostException e) {
             System.err.println("Unknown host: " + host);
             System.exit(1);
@@ -95,23 +97,39 @@ public class Main {
         c1.username = "Melina";
         c1.password = "12345";
 
-        pw.print(c1.createPacket());
-        pw.flush();
-        pw.print(l.createPacket());
-        pw.flush();
+        out.print(c1.createPacket());
+        out.flush();
+
+        Command nextCommand = Command.parse(in);
+
+        if(nextCommand.getType() == Command.CommandType.RegisterResponse){
+            RegisterResponse res = (RegisterResponse) nextCommand;
+
+            if(res.getErrorCode().equals(RegisterResponse.SUCCESS)){
+                System.out.println("User Created Successfully");
+            }
+            else{
+                System.out.println("User Creation Failed");
+            }
+        }
+
+
+
+        out.print(l.createPacket());
+        out.flush();
 
         String response;
 
         do {
-            response = br.readLine();
+            response = in.readLine();
             System.out.println("Server : " + response);
         }
         while (!response.startsWith("exit"));
 
 
 
-        pw.close();
-        br.close();
+        out.close();
+        in.close();
         s.close();
     }
 

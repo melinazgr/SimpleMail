@@ -7,6 +7,7 @@ public abstract class Command {
 
     public enum CommandType{
         Register,
+        RegisterResponse,
         Login,
         Logout,
     }

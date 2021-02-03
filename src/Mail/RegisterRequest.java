@@ -12,9 +12,7 @@ public class RegisterRequest extends Mail.Command {
     final public static String PASSWORD = "PASSWORD:";
     final public static String END = "ENDCOMMAND";
 
-    public RegisterRequest(){
-
-    }
+    public RegisterRequest(){}
 
     public RegisterRequest(String username, String password){
         this.username = username;
