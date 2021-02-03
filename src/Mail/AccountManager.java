@@ -10,7 +10,7 @@ public class AccountManager {
 
     // private constructor restricted to this class itself
     private AccountManager() {
-        ArrayList<Account> users = new ArrayList<>();
+        this.users = new ArrayList<Account>();
     }
 
     // static method to create instance of AccountManager class

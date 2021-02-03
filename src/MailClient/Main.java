@@ -7,9 +7,10 @@ import Mail.RegisterResponse;
 
 import java.io.*;
 import java.net.*;
+import java.util.Scanner;
 
 public class Main {
-    public static void main(String[] argv) throws IOException {
+    public static void main(String[] argv) throws IOException, InterruptedException {
         Socket s = new Socket();
         String host = "127.0.0.1";
         int port = 5000;
@@ -19,9 +20,6 @@ public class Main {
 
         InetAddress localAddress = null;
         InetAddress remoteAddress = null;
-
-        PrintWriter out = null;
-        BufferedReader in = null;
 
         try {
             boolean addressSet = false;
@@ -63,8 +61,7 @@ public class Main {
             localAddress = s.getLocalAddress();
             remoteAddress = s.getInetAddress();
 
-            out = new PrintWriter(s.getOutputStream(), true);
-            in = new BufferedReader(new InputStreamReader(s.getInputStream()));
+
         } catch (UnknownHostException e) {
             System.err.println("Unknown host: " + host);
             System.exit(1);
@@ -75,8 +72,70 @@ public class Main {
         System.out.println("local: " + localAddress + " : " + s.getLocalPort());
         System.out.println("remote: " + remoteAddress);
 
-//        Scanner scanner = new Scanner(System.in);
-//        String message = null;
+        handleUserMenuInput(s);
+
+        s.close();
+    }
+
+    private static void handleUserMenuInput(Socket s) throws IOException, InterruptedException {
+        PrintWriter out = new PrintWriter(s.getOutputStream(), true);
+        BufferedReader in = new BufferedReader(new InputStreamReader(s.getInputStream()));
+
+        Scanner scanner = new Scanner(System.in);
+        String message = "";
+
+        System.out.println("before menu");
+
+        while(!message.equalsIgnoreCase("exit")){
+            //todo main menu
+
+            System.out.println("MAIN MENU: SIGNUP / LOGIN / EXIT");
+            message = scanner.next();
+
+            if(message.equalsIgnoreCase("signup")){
+                System.out.println("Type your username: ");
+                String username = scanner.next();
+
+                System.out.println("Type your password: ");
+                String password = scanner.next();
+
+                if(validateUser(username, password)){
+                    RegisterRequest req = new RegisterRequest();
+
+                    req.username = username;
+                    req.password = password;
+
+                    out.print(req.createPacket());
+                    out.flush();
+
+                    Command nextCommand = Command.parse(in);
+                    System.out.println("got response");
+
+                    if(nextCommand.getType() == Command.CommandType.RegisterResponse){
+                        RegisterResponse res = (RegisterResponse) nextCommand;
+
+                        if(res.getErrorCode().equals(RegisterResponse.SUCCESS)){
+                            System.out.println("User Created Successfully");
+                        }
+                        else{
+                            System.out.println("User Creation Failed:" + res.getErrorCode());
+                        }
+                    }
+                    else{
+                        System.out.println("Unexpected Response.");
+
+                    }
+                }
+
+
+            }
+
+        }
+
+
+
+
+
 //
 //        do {
 //
@@ -89,48 +148,37 @@ public class Main {
 //            System.out.println("Server : " + response);
 //        }
 //        while (!message.startsWith("bye"));
-
-        RegisterRequest c1 = new RegisterRequest();
-        LogoutRequest l = new LogoutRequest();
-
-        // todo from scanner
-        c1.username = "Melina";
-        c1.password = "12345";
-
-        out.print(c1.createPacket());
-        out.flush();
-
-        Command nextCommand = Command.parse(in);
-
-        if(nextCommand.getType() == Command.CommandType.RegisterResponse){
-            RegisterResponse res = (RegisterResponse) nextCommand;
-
-            if(res.getErrorCode().equals(RegisterResponse.SUCCESS)){
-                System.out.println("User Created Successfully");
-            }
-            else{
-                System.out.println("User Creation Failed");
-            }
-        }
-
-
-
-        out.print(l.createPacket());
-        out.flush();
-
-        String response;
-
-        do {
-            response = in.readLine();
-            System.out.println("Server : " + response);
-        }
-        while (!response.startsWith("exit"));
-
-
+//
+//        LogoutRequest l = new LogoutRequest();
+//
+//        // todo from scanner
+//        c1.username = "Melina";
+//        c1.password = "12345";
+//
+//        out.print(c1.createPacket());
+//        out.flush();
+//
+//
+//
+//        out.print(l.createPacket());
+//        out.flush();
+//
+//        String response;
+//
+//        do {
+//            response = in.readLine();
+//            System.out.println("Server : " + response);
+//        }
+//        while (!response.startsWith("exit"));
 
         out.close();
         in.close();
-        s.close();
     }
+
+    private static boolean validateUser(String username, String password) {
+
+        return true;
+    }
+
 
 }

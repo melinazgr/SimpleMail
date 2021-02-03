@@ -9,7 +9,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class LoginCommandTest {
 
     @Test
-    public void parsePacket1() throws IOException {
+    public void parsePacket1() throws IOException, InterruptedException {
         String username = "Melina";
         String password = "1234";
 

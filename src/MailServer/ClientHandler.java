@@ -22,23 +22,27 @@ public class ClientHandler extends Thread{
 
         try{
             // input output
-            out = new PrintStream(client.getOutputStream());
+
+            OutputStream os = client.getOutputStream();
+            out = new PrintStream(os);
             in = new BufferedReader(new InputStreamReader(client.getInputStream()));
-
             Command nextCommand = null;
-
             do {
-
                 nextCommand = Command.parse(in);
+
+                if(nextCommand == null){
+                    break;
+                }
 
                 // requests
                 if(nextCommand.getType() == Command.CommandType.Register){
-                    RegisterRequest c = (RegisterRequest) nextCommand;
+                    RegisterRequest c = (RegisterRequest)nextCommand;
                     System.out.println("Register user: " + c.username);
 
                     RegisterResponse response = handleRegister(c);
-                    out.print(response);
+                    out.print(response.createPacket());
                     out.flush();
+                    System.out.println("response sent");
                 }
 
                 else if(nextCommand.getType() == Command.CommandType.Login){
@@ -51,14 +55,11 @@ public class ClientHandler extends Thread{
 
                 if(nextCommand.getType() == Command.CommandType.Logout){
                     System.out.println("Logout user: " + currUsername);
-
                 }
-
             }
             while (nextCommand.getType() != Command.CommandType.Logout);
         }
-
-        catch(IOException e){
+        catch(IOException | InterruptedException e){
             System.out.println("IOException");
         }
     }
@@ -72,10 +73,13 @@ public class ClientHandler extends Thread{
             Account newUser = new Account(req.username, req.password);
             AccountManager.getInstance().addAccount(newUser);
 
-            response.createPacket(RegisterResponse.SUCCESS);
+            response.setErrorCode(RegisterResponse.SUCCESS);
+            System.out.println("User created");
+
         }
         else{
-            response.createPacket(RegisterResponse.FAIL);
+            response.setErrorCode(RegisterResponse.FAIL);
+            System.out.println("User create failed");
         }
         return response;
     }
