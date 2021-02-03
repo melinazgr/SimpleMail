@@ -1,11 +1,10 @@
 package MailClient;
 
-import Mail.LogoutCommand;
-import Mail.RegisterCommand;
+import Mail.LogoutRequest;
+import Mail.RegisterRequest;
 
 import java.io.*;
 import java.net.*;
-import java.util.Scanner;
 
 public class Main {
     public static void main(String[] argv) throws IOException {
@@ -89,8 +88,8 @@ public class Main {
 //        }
 //        while (!message.startsWith("bye"));
 
-        RegisterCommand c1 = new RegisterCommand();
-        LogoutCommand l = new LogoutCommand();
+        RegisterRequest c1 = new RegisterRequest();
+        LogoutRequest l = new LogoutRequest();
 
         // todo from scanner
         c1.username = "Melina";

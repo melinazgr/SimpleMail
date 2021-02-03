@@ -17,20 +17,20 @@ public abstract class Command {
 
         String command = (String)in.readLine();
 
-        if(command.startsWith(RegisterCommand.COMMANDNAME)){
-            Command c = new RegisterCommand();
+        if(command.startsWith(RegisterRequest.COMMANDNAME)){
+            Command c = new RegisterRequest();
             c.parsePacket(in);
             return c;
         }
 
-        else if(command.startsWith(LoginCommand.COMMANDNAME)){
-            Command c = new LoginCommand();
+        else if(command.startsWith(LoginRequest.COMMANDNAME)){
+            Command c = new LoginRequest();
             c.parsePacket(in);
             return c;
         }
 
-        else if(command.startsWith(LogoutCommand.COMMANDNAME)){
-            Command c = new LogoutCommand();
+        else if(command.startsWith(LogoutRequest.COMMANDNAME)){
+            Command c = new LogoutRequest();
             c.parsePacket(in);
             return c;
         }

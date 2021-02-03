@@ -3,7 +3,7 @@ package Mail;
 import java.io.BufferedReader;
 import java.io.IOException;
 
-public class RegisterCommand extends Mail.Command {
+public class RegisterRequest extends Mail.Command {
 
     public String username, password;
 
@@ -12,11 +12,11 @@ public class RegisterCommand extends Mail.Command {
     final public static String PASSWORD = "PASSWORD:";
     final public static String END = "ENDCOMMAND";
 
-    public RegisterCommand(){
+    public RegisterRequest(){
 
     }
 
-    public RegisterCommand(String username, String password){
+    public RegisterRequest(String username, String password){
         this.username = username;
         this.password = password;
     }

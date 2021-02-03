@@ -3,11 +3,11 @@ package Mail;
 import java.io.BufferedReader;
 import java.io.IOException;
 
-public class LogoutCommand extends Command{
+public class LogoutRequest extends Command{
     final public static String COMMANDNAME = "COMMAND:LOGOUT";
     final public static String END = "ENDCOMMAND";
 
-    public LogoutCommand(){
+    public LogoutRequest(){
 
     }
 

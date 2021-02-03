@@ -1,5 +1,6 @@
-package Mail;
-
+import Mail.Command;
+import Mail.LoginRequest;
+import Mail.RegisterRequest;
 import org.junit.jupiter.api.Test;
 import java.io.*;
 import static org.junit.jupiter.api.Assertions.*;
@@ -11,8 +12,8 @@ class CommandTest {
         String username = "Melina";
         String password = "1234";
 
-        String s1 = RegisterCommand.createPacket(username, password);
-        String s2 = LoginCommand.createPacket(username, password);
+        String s1 = RegisterRequest.createPacket(username, password);
+        String s2 = LoginRequest.createPacket(username, password);
 
         StringBuilder sb = new StringBuilder();
         sb.append(s1);
@@ -22,12 +23,12 @@ class CommandTest {
         InputStream stream = new ByteArrayInputStream(sb.toString().getBytes());
         BufferedReader br = new BufferedReader(new InputStreamReader(stream));
 
-        RegisterCommand c1 = (RegisterCommand) Command.parse(br);
+        RegisterRequest c1 = (RegisterRequest) Command.parse(br);
 
         assertEquals(c1.username, username);
         assertEquals(c1.password, password);
 
-        LoginCommand c2 = (LoginCommand) Command.parse(br);
+        LoginRequest c2 = (LoginRequest) Command.parse(br);
         assertEquals(c2.username, username);
         assertEquals(c2.password, password);
 

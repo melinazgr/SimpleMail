@@ -1,8 +1,8 @@
 package MailServer;
 
 import Mail.Command;
-import Mail.LoginCommand;
-import Mail.RegisterCommand;
+import Mail.LoginRequest;
+import Mail.RegisterRequest;
 
 import java.io.*;
 import java.net.*;
@@ -34,12 +34,12 @@ public class ClientHandler extends Thread{
                 nextCommand = Command.parse(in);
 
                 if(nextCommand.getType() == Command.CommandType.Register){
-                    RegisterCommand c = (RegisterCommand) nextCommand;
+                    RegisterRequest c = (RegisterRequest) nextCommand;
                     System.out.println("Register user: " + c.username);
                 }
 
                 else if(nextCommand.getType() == Command.CommandType.Login){
-                    LoginCommand c = (LoginCommand) nextCommand;
+                    LoginRequest c = (LoginRequest) nextCommand;
                     System.out.println("Login user: " + c.username);
                     currUsername = c.username;
                     isLogin = true;

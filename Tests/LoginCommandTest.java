@@ -1,5 +1,5 @@
-package Mail;
-
+import Mail.Command;
+import Mail.LoginRequest;
 import org.junit.jupiter.api.Test;
 
 import java.io.*;
@@ -13,12 +13,12 @@ class LoginCommandTest {
         String username = "Melina";
         String password = "1234";
 
-        String s = LoginCommand.createPacket(username, password);
+        String s = LoginRequest.createPacket(username, password);
 
         InputStream stream = new ByteArrayInputStream(s.getBytes());
         BufferedReader br = new BufferedReader(new InputStreamReader(stream));
 
-        LoginCommand c = (LoginCommand) Command.parse(br);
+        LoginRequest c = (LoginRequest) Command.parse(br);
 
         assertEquals(c.username, username);
         assertEquals(c.password, password);

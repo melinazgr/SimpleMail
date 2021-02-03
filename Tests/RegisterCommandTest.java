@@ -1,5 +1,5 @@
-package Mail;
-
+import Mail.Command;
+import Mail.RegisterRequest;
 import org.junit.jupiter.api.Test;
 
 import java.io.*;
@@ -14,12 +14,12 @@ public class RegisterCommandTest {
         String username = "Melina";
         String password = "1234";
 
-        String s = RegisterCommand.createPacket(username, password);
+        String s = RegisterRequest.createPacket(username, password);
 
         InputStream stream = new ByteArrayInputStream(s.getBytes());
         BufferedReader br = new BufferedReader(new InputStreamReader(stream));
 
-        RegisterCommand c = (RegisterCommand) Command.parse(br);
+        RegisterRequest c = (RegisterRequest) Command.parse(br);
 
         assertEquals(c.username, username);
         assertEquals(c.password, password);

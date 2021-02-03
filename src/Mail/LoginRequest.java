@@ -3,7 +3,7 @@ package Mail;
 import java.io.BufferedReader;
 import java.io.IOException;
 
-public class LoginCommand extends Command{
+public class LoginRequest extends Command{
     final public static String COMMANDNAME = "COMMAND:LOGIN";
     final public static String USERNAME = "USERNAME:";
     final public static String PASSWORD = "PASSWORD:";
@@ -12,11 +12,11 @@ public class LoginCommand extends Command{
     public String username, password;
 
 
-    public LoginCommand(){
+    public LoginRequest(){
 
     }
 
-    public LoginCommand(String username, String password){
+    public LoginRequest(String username, String password){
         this.username = username;
         this.password = password;
     }
