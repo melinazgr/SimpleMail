@@ -9,16 +9,24 @@ public abstract class Command {
 
         String command = (String)in.readLine();
 
-        if(command.startsWith("COMMAND:REGISTER")){
+        if(command.startsWith(RegisterCommand.COMMANDNAME)){
             Command c = new RegisterCommand();
             c.parsePacket(in);
             return c;
         }
+
+        else if(command.startsWith(LoginCommand.COMMANDNAME)){
+            Command c = new LoginCommand();
+            c.parsePacket(in);
+            return c;
+        }
+
+
         //TODO ALL PACKETS
         return null;
     }
 
-    public abstract Command parsePacket(BufferedReader in) throws IOException;
+    public abstract void parsePacket(BufferedReader in) throws IOException;
 
     public abstract String createPacket();
 }

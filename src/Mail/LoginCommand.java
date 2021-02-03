@@ -3,20 +3,20 @@ package Mail;
 import java.io.BufferedReader;
 import java.io.IOException;
 
-public class RegisterCommand extends Mail.Command {
-
-    public String username, password;
-
-    final public static String COMMANDNAME = "COMMAND:REGISTER";
+public class LoginCommand extends Command{
+    final public static String COMMANDNAME = "COMMAND:LOGIN";
     final public static String USERNAME = "USERNAME:";
     final public static String PASSWORD = "PASSWORD:";
     final public static String END = "ENDCOMMAND";
 
-    public RegisterCommand(){
+    public String username, password;
+
+
+    public LoginCommand(){
 
     }
 
-    public RegisterCommand(String username, String password){
+    public LoginCommand(String username, String password){
         this.username = username;
         this.password = password;
     }
@@ -55,5 +55,4 @@ public class RegisterCommand extends Mail.Command {
         }
 
     }
-
 }
