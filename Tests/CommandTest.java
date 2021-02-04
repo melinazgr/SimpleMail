@@ -25,12 +25,12 @@ class CommandTest {
 
         RegisterRequest c1 = (RegisterRequest) Command.parse(br);
 
-        assertEquals(c1.username, username);
-        assertEquals(c1.password, password);
+        assertEquals(c1.getUsername(), username);
+        assertEquals(c1.getPassword(), password);
 
         LoginRequest c2 = (LoginRequest) Command.parse(br);
-        assertEquals(c2.username, username);
-        assertEquals(c2.password, password);
+        assertEquals(c2.getUsername(), username);
+        assertEquals(c2.getPassword(), password);
 
 
     }

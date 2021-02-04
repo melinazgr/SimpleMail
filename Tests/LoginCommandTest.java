@@ -20,8 +20,8 @@ class LoginCommandTest {
 
         LoginRequest c = (LoginRequest) Command.parse(br);
 
-        assertEquals(c.username, username);
-        assertEquals(c.password, password);
+        assertEquals(c.getUsername(), username);
+        assertEquals(c.getPassword(), password);
 
     }
 }

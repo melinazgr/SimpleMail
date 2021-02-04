@@ -7,7 +7,6 @@ public class AccountManager {
     private static AccountManager singleInstance = null;
     private ArrayList<Account> users;
 
-
     // private constructor restricted to this class itself
     private AccountManager() {
         this.users = new ArrayList<Account>();
@@ -22,19 +21,14 @@ public class AccountManager {
         return singleInstance;
     }
 
-
     public void addAccount(Account user){
         users.add(user);
     }
 
-//    public void addAccount(String username, String password){
-//        users.add(user);
-//    }
-
     public Account findAccount(String username){
 
         for (int i = 0; i < users.size(); i++) {
-            if (users.get(i).username.equals(username)) {
+            if (users.get(i).getUsername().equals(username)) {
                 return users.get(i);
             }
         }

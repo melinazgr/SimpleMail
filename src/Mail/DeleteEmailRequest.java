@@ -16,6 +16,13 @@ public class DeleteEmailRequest extends Command {
         this.emailID = emailID;
     }
 
+    public void setEmailID(String emailID) {
+        this.emailID = emailID;
+    }
+
+    public String getEmailID() {
+        return emailID;
+    }
 
     @Override
     public CommandType getType() {

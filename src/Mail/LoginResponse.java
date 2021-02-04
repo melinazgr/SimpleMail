@@ -9,7 +9,6 @@ public class LoginResponse extends Command {
     final public static String COMMANDNAME = "RESPONSE:LOGIN";
     final public static String ERROR = "ERRORCODE:";
     final public static String END = "ENDRESPONSE";
-
     final public static String SUCCESS = "SUCCESS"; //user loged in ok
     final public static String FAIL = "FAIL"; // login failure
 

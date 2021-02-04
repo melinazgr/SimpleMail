@@ -21,8 +21,8 @@ public class RegisterCommandTest {
 
         RegisterRequest c = (RegisterRequest) Command.parse(br);
 
-        assertEquals(c.username, username);
-        assertEquals(c.password, password);
+        assertEquals(c.getUsername(), username);
+        assertEquals(c.getPassword(), password);
 
     }
 }

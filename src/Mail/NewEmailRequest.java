@@ -13,7 +13,6 @@ public class NewEmailRequest extends Command {
     final public static String END = "ENDCOMMAND";
 
 
-
     @Override
     public CommandType getType() {
         return null;

@@ -5,7 +5,7 @@ import java.io.IOException;
 
 public class RegisterRequest extends Command {
 
-    public String username, password;
+    private String username, password;
 
     final public static String COMMANDNAME = "COMMAND:REGISTER";
     final public static String USERNAME = "USERNAME:";
@@ -16,6 +16,22 @@ public class RegisterRequest extends Command {
 
     public RegisterRequest(String username, String password){
         this.username = username;
+        this.password = password;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public void setPassword(String password) {
         this.password = password;
     }
 

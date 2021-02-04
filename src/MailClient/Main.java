@@ -102,8 +102,8 @@ public class Main {
                 if(validateUser(username, password)){
                     RegisterRequest req = new RegisterRequest();
 
-                    req.username = username;
-                    req.password = password;
+                    req.setUsername(username);
+                    req.setPassword(password);
 
                     out.print(req.createPacket());
                     out.flush();
@@ -123,62 +123,16 @@ public class Main {
                     }
                     else{
                         System.out.println("Unexpected Response.");
-
                     }
                 }
-
-
             }
-
         }
-
-
-
-
-
-//
-//        do {
-//
-//            message = scanner.next();
-//            pw.println(message);
-//
-//            String response;
-//
-//            response = br.readLine();
-//            System.out.println("Server : " + response);
-//        }
-//        while (!message.startsWith("bye"));
-//
-//        LogoutRequest l = new LogoutRequest();
-//
-//        // todo from scanner
-//        c1.username = "Melina";
-//        c1.password = "12345";
-//
-//        out.print(c1.createPacket());
-//        out.flush();
-//
-//
-//
-//        out.print(l.createPacket());
-//        out.flush();
-//
-//        String response;
-//
-//        do {
-//            response = in.readLine();
-//            System.out.println("Server : " + response);
-//        }
-//        while (!response.startsWith("exit"));
 
         out.close();
         in.close();
     }
 
     private static boolean validateUser(String username, String password) {
-
         return true;
     }
-
-
 }

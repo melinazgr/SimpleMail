@@ -37,7 +37,7 @@ public class ClientHandler extends Thread{
                 // requests
                 if(nextCommand.getType() == Command.CommandType.Register){
                     RegisterRequest c = (RegisterRequest)nextCommand;
-                    System.out.println("Register user: " + c.username);
+                    System.out.println("Register user: " + c.getUsername());
 
                     RegisterResponse response = handleRegister(c);
                     out.print(response.createPacket());
@@ -47,8 +47,8 @@ public class ClientHandler extends Thread{
 
                 else if(nextCommand.getType() == Command.CommandType.Login){
                     LoginRequest c = (LoginRequest) nextCommand;
-                    System.out.println("Login user: " + c.username);
-                    currUsername = c.username;
+                    System.out.println("Login user: " + c.getUsername());
+                    currUsername = c.getUsername();
                     isLogin = true;
                     //todo validate user
                 }
@@ -66,11 +66,11 @@ public class ClientHandler extends Thread{
 
 
     public RegisterResponse handleRegister (RegisterRequest req){
-        Account acc = AccountManager.getInstance().findAccount(req.username);
+        Account acc = AccountManager.getInstance().findAccount(req.getUsername());
         RegisterResponse response = new RegisterResponse();
 
         if(acc == null){
-            Account newUser = new Account(req.username, req.password);
+            Account newUser = new Account(req.getUsername(), req.getPassword());
             AccountManager.getInstance().addAccount(newUser);
 
             response.setErrorCode(RegisterResponse.SUCCESS);
