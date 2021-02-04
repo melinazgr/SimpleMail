@@ -11,13 +11,11 @@ public class LogoutRequest extends Command{
 
     }
 
-
     public String createPacket(){
         String s = COMMANDNAME + "\n" +
                 END +  "\n";
         return s;
     }
-
 
     @Override
     public CommandType getType() {

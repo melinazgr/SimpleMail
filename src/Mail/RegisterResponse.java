@@ -3,21 +3,18 @@ package Mail;
 import java.io.BufferedReader;
 import java.io.IOException;
 
-public class RegisterResponse extends Mail.Command {
+public class RegisterResponse extends Command {
 
     private String errorCode;
 
     final public static String COMMANDNAME = "RESPONSE:REGISTER";
-    final public static String END = "ENDRESPONSE";
     final public static String ERROR = "ERRORCODE:";
+    final public static String END = "ENDRESPONSE";
 
     final public static String SUCCESS = "SUCCESS"; //user created ok
     final public static String FAIL = "FAIL"; // user exists / registration failure
 
-    public RegisterResponse(){}
-
-    public RegisterResponse (String errorCode){
-        this.errorCode = errorCode;
+    public RegisterResponse(){
     }
 
     public void setErrorCode(String errorCode) {

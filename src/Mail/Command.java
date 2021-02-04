@@ -10,7 +10,15 @@ public abstract class Command {
         Register,
         RegisterResponse,
         Login,
+        LoginResponse,
         Logout,
+        LogoutResponse,
+        NewEmail,
+        NewEmailResponse,
+        ReadEmail,
+        ReadEmailResponse,
+        DeleteEmail,
+        DeleteEmailResponse
     }
 
     public abstract CommandType getType();
@@ -52,11 +60,69 @@ public abstract class Command {
             return c;
         }
 
+        else if(command.startsWith(LoginResponse.COMMANDNAME)){
+            Command c = new LoginResponse();
+            c.parsePacket(in);
+            return c;
+        }
+
         else if(command.startsWith(LogoutRequest.COMMANDNAME)){
             Command c = new LogoutRequest();
             c.parsePacket(in);
             return c;
         }
+
+        else if(command.startsWith(LogoutResponse.COMMANDNAME)){
+            Command c = new LogoutResponse();
+            c.parsePacket(in);
+            return c;
+        }
+
+        else if(command.startsWith(NewEmailRequest.COMMANDNAME)){
+            Command c = new NewEmailRequest();
+            c.parsePacket(in);
+            return c;
+        }
+
+        else if(command.startsWith(NewEmailResponse.COMMANDNAME)){
+            Command c = new NewEmailResponse();
+            c.parsePacket(in);
+            return c;
+        }
+
+        else if(command.startsWith(ReadEmailRequest.COMMANDNAME)){
+            Command c = new ReadEmailRequest();
+            c.parsePacket(in);
+            return c;
+        }
+
+        else if(command.startsWith(ReadEmailResponse.COMMANDNAME)){
+            Command c = new ReadEmailResponse();
+            c.parsePacket(in);
+            return c;
+        }
+
+        else if(command.startsWith(DeleteEmailRequest.COMMANDNAME)){
+            Command c = new DeleteEmailRequest();
+            c.parsePacket(in);
+            return c;
+        }
+        else if(command.startsWith(DeleteEmailResponse.COMMANDNAME)){
+            Command c = new DeleteEmailResponse();
+            c.parsePacket(in);
+            return c;
+        }
+        else if(command.startsWith(ShowEmailsRequest.COMMANDNAME)){
+            Command c = new ShowEmailsRequest();
+            c.parsePacket(in);
+            return c;
+        }
+        else if(command.startsWith(ShowEmailsResponse.COMMANDNAME)){
+            Command c = new ShowEmailsResponse();
+            c.parsePacket(in);
+            return c;
+        }
+
         else{
             System.out.println("Unknown packet: "+ command);
         }
