@@ -21,6 +21,10 @@ public class AccountManager {
         return singleInstance;
     }
 
+    public ArrayList<Account> getUsers() {
+        return users;
+    }
+
     public void addAccount(Account user){
         users.add(user);
     }

@@ -1,19 +1,24 @@
 package MailClient;
 
 import Mail.*;
+import MailServer.ClientHandler;
 
 import java.io.*;
 import java.net.*;
 import java.util.Scanner;
 
 public class Main {
+    private static String currUsername;
+
     public static void main(String[] argv) throws IOException, InterruptedException {
         Socket s = new Socket();
         String host = "127.0.0.1";
         int port = 5000;
 
+
+
         String helpText = "Usage: java Main [-address <IP address>]\n" +
-                "                 [-port]\n";
+                        "                 [-port]\n";
 
         InetAddress localAddress = null;
         InetAddress remoteAddress = null;
@@ -75,6 +80,9 @@ public class Main {
     }
 
     private static void handleUserMenuInput(Socket s) throws IOException, InterruptedException {
+        boolean isLogin = false;
+        int state = 1;
+
         PrintWriter out = new PrintWriter(s.getOutputStream(), true);
         BufferedReader in = new BufferedReader(new InputStreamReader(s.getInputStream()));
 
@@ -84,18 +92,29 @@ public class Main {
         while(!message.equalsIgnoreCase("exit")){
             //todo main menu
 
-            System.out.println("==========\n" +
-                                "> LogIn\n" +
-                                "> SignUp\n" +
-                                "> Exit\n" +
-                                "==========");
+
+            showMenu(state);
+
             message = scanner.next();
 
-            if(message.equalsIgnoreCase("signup")){
-                registerOption(out, in, scanner);
+            if(state == 1){
+                if(message.equalsIgnoreCase("signup")){
+                    registerOption(out, in, scanner);
+                }
+                else if(message.equalsIgnoreCase("login")){
+                    if(doLogin(out, in, scanner)){
+                        state = 2;
+                    }
+                }
             }
-            else if(message.equalsIgnoreCase("login")){
-                loginOption(out, in, scanner);
+            else if(state == 2){
+                if(message.equalsIgnoreCase("newemail")){
+                    newEmailOption(out, in, scanner);
+                }
+                if(message.equalsIgnoreCase("logout")){
+                    // todo logout
+                    state = 1;
+                }
             }
         }
 
@@ -103,15 +122,78 @@ public class Main {
         in.close();
     }
 
-    private static void loginOption(PrintWriter out, BufferedReader in, Scanner scanner) throws IOException, InterruptedException {
+    public static void showMenu(int state){
+        if(state == 1){
+            System.out.println("==========\n" +
+                    "> LogIn\n" +
+                    "> SignUp\n" +
+                    "> Exit\n" +
+                    "==========");
+        }
+        else{
+            System.out.println("===============\n" +
+                    "> NewEmail\n" +
+                    "> ShowEmails\n" +
+                    "> ReadEmail\n" +
+                    "> DeleteEmail\n" +
+                    "> LogOut\n" +
+                    "> Exit\n" +
+                    "===============");
+        }
+    }
+    private static void newEmailOption(PrintWriter out, BufferedReader in, Scanner scanner) throws IOException, InterruptedException {
         System.out.println("----------\n" +
-                            "Type your username:\n" +
-                            "----------");
+                            "Receiver:\n");
+        String receiver = scanner.next();
+
+        System.out.println("----------\n" +
+                "Subject:\n");
+        String subject = scanner.next();
+
+        System.out.println("----------\n" +
+                "Main Body:\n");
+        // todo read multiple line + sysout
+        String mainbody = scanner.next();
+
+        NewEmailRequest req = new NewEmailRequest();
+
+        req.setSender(currUsername);
+        req.setReceiver(receiver);
+        req.setSubject(subject);
+        req.setMainbody(mainbody);
+
+        out.print(req.createPacket());
+        out.flush();
+
+
+        Command nextCommand = Command.parse(in);
+
+            if(nextCommand.getType() == Command.CommandType.NewEmailResponse){
+                NewEmailResponse res = (NewEmailResponse) nextCommand;
+
+                if(res.getErrorCode().equals(NewEmailResponse.SUCCESS)){
+                    System.out.println("----------\n" +
+                            "Email sent\n" );
+                }
+                else{
+                    System.out.println("----------\n" +
+                            "Email sent Failed\n");
+                }
+            }
+            else{
+                System.out.println("----------\n" +
+                        "Unexpected Response.\n");
+            }
+        }
+
+
+    private static boolean doLogin(PrintWriter out, BufferedReader in, Scanner scanner) throws IOException, InterruptedException {
+        System.out.println("----------\n" +
+                            "Type your username:\n" );
         String username = scanner.next();
 
         System.out.println("----------\n" +
-                            "Type your password:\n"+
-                            "----------");
+                            "Type your password:\n");
         String password = scanner.next();
 
         if(validateUser(username, password)){
@@ -130,32 +212,31 @@ public class Main {
 
                 if(res.getErrorCode().equals(LoginResponse.SUCCESS)){
                     System.out.println("----------\n" +
-                                        "User Logged In Successfully\n" +
-                                        "----------");
+                                        "Welcome back " + username);
+                    currUsername = username;
+                    return true;
                 }
                 else{
                     System.out.println("----------\n" +
-                                        "User Login Failed\n" +
-                                        "----------");
+                                        "User Login Failed\n");
                 }
             }
             else{
                 System.out.println("----------\n" +
-                                    "Unexpected Response.\n"+
-                                    "----------");
+                                    "Unexpected Response.\n");
             }
         }
+
+        return false;
     }
 
     private static void registerOption(PrintWriter out, BufferedReader in, Scanner scanner) throws IOException, InterruptedException {
         System.out.println("----------\n" +
-                            "Type your username:\n" +
-                            "----------");
+                            "Type your username:\n");
         String username = scanner.next();
 
         System.out.println("----------\n" +
-                            "Type your password:\n"+
-                            "----------");
+                            "Type your password:\n");
         String password = scanner.next();
 
         if(validateUser(username, password)){
@@ -174,19 +255,16 @@ public class Main {
 
                 if(res.getErrorCode().equals(RegisterResponse.SUCCESS)){
                     System.out.println("----------\n" +
-                                        "User created Successfully\n" +
-                                        "----------");
+                                        "User created Successfully\n" );
                 }
                 else{
                     System.out.println("----------\n" +
-                                        "User Login Failed\n" +
-                                        "----------");
+                                        "User creation Failed\n");
                 }
             }
             else{
                 System.out.println("----------\n" +
-                                    "Unexpected Response.\n"+
-                                    "----------");
+                                    "Unexpected Response.\n");
             }
         }
     }
@@ -197,12 +275,13 @@ public class Main {
             String domain = username.substring(username.indexOf("@"));
             if(domain.contains(".")){
                 return true;
+                // todo correct domain
             }
         }
 
+        // todo ------ var
         System.out.println("----------\n" +
-                            "Invalid Username\n" +
-                            "----------" );
+                            "Invalid Username\n");
         return false;
     }
 }

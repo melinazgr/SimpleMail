@@ -4,13 +4,24 @@ import java.util.ArrayList;
 
 public class Account {
     private String username, password;
+    private boolean isLogin = false;
     private ArrayList<Email> mailbox;
+    private int emailId = 0;
 
     public Account (String username, String password){
-        ArrayList<Email> mailbox = new ArrayList<>();
+        this.mailbox = new ArrayList<>();
 
         this.username = username;
         this.password = password;
+    }
+
+
+    public boolean getLogin() {
+        return isLogin;
+    }
+
+    public void setLogin(boolean login) {
+        isLogin = login;
     }
 
     public String getUsername() {
@@ -34,6 +45,8 @@ public class Account {
     }
 
     public void addEmail(Email e){
+        String id = Integer.toString(++emailId);
+        e.setId(id);
         mailbox.add(e);
     }
 

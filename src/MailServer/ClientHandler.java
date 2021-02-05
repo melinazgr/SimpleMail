@@ -7,12 +7,13 @@ import java.net.*;
 
 public class ClientHandler extends Thread{
     private Socket client;
-    String currUsername = null;
-    Boolean isLogin = false;
+    public String currUsername = null;
+    public static Boolean isLogin = false;
 
     public ClientHandler(Socket client){
         this.client = client;
     }
+
 
     public void run(){
 
@@ -56,11 +57,24 @@ public class ClientHandler extends Thread{
                     out.print(response.createPacket());
                     out.flush();
                     currUsername = user.getUsername();
-                    isLogin = true;
                 }
 
-                if(nextCommand.getType() == Command.CommandType.Logout){
+                else if(nextCommand.getType() == Command.CommandType.Logout){
                     System.out.println("Logout user: " + currUsername);
+                    currUsername = null;
+                }
+
+                else if(nextCommand.getType() == Command.CommandType.NewEmail){
+                    NewEmailResponse response;
+                    if(currUsername == null){
+                        response = new NewEmailResponse(NewEmailResponse.FAIL, "User not logged in.");
+                    }
+                    else{
+                        NewEmailRequest newEmailRequest = (NewEmailRequest) nextCommand;
+                        response = handleNewEmail(newEmailRequest);
+                    }
+                    out.print(response.createPacket());
+                    out.flush();
                 }
             }
             while (nextCommand.getType() != Command.CommandType.Logout);
@@ -70,6 +84,31 @@ public class ClientHandler extends Thread{
         }
     }
 
+    private NewEmailResponse handleNewEmail(NewEmailRequest req) {
+        Account receiver = AccountManager.getInstance().findAccount(req.getReceiver());
+        NewEmailResponse response = new NewEmailResponse();
+
+        if(receiver != null){
+
+            Email email = new Email();
+            email.setSender(req.getSender());
+            email.setReceiver(receiver.getUsername());
+            email.setSubject(req.getSubject());
+            email.setMainbody(req.getMainbody());
+            email.setNew(true);
+
+            receiver.addEmail(email);
+            response.setErrorCode(NewEmailResponse.SUCCESS);
+
+            System.out.println("Email sent from: " + email.getSender() + " to: " + email.getReceiver() + " ID: " + email.getId());
+        }
+        else{
+            response.setErrorCode(NewEmailResponse.FAIL);
+            response.setErrorMessage("Invalid Receiver Username");
+        }
+        return response;
+    }
+
     private LoginResponse handleLogin(LoginRequest req) {
         Account acc = AccountManager.getInstance().findAccount(req.getUsername());
         LoginResponse response = new LoginResponse();
@@ -77,6 +116,7 @@ public class ClientHandler extends Thread{
         if(acc != null){
             if(acc.getPassword().equals(req.getPassword())){
                 response.setErrorCode(LoginResponse.SUCCESS);
+                acc.setLogin(true);
                 System.out.println("User logged in");
             }
             else{
@@ -90,7 +130,6 @@ public class ClientHandler extends Thread{
         }
         return response;
     }
-
 
     public RegisterResponse handleRegister (RegisterRequest req){
         Account acc = AccountManager.getInstance().findAccount(req.getUsername());

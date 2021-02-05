@@ -13,7 +13,7 @@ public class LogoutRequest extends Command{
 
     public String createPacket(){
         String s = COMMANDNAME + "\n" +
-                END +  "\n";
+                    END +  "\n";
         return s;
     }
 
@@ -31,6 +31,5 @@ public class LogoutRequest extends Command{
 
             line = (String)in.readLine();
         }
-
     }
 }
