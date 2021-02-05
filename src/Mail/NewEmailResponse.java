@@ -6,11 +6,12 @@ import java.io.IOException;
 public class NewEmailResponse extends Command{
     private String errorCode;
     private String errorMessage;
+
     final public static String COMMANDNAME = "RESPONSE:NEWEMAIL";
     final public static String ERROR = "ERRORCODE:";
     final public static String END = "ENDRESPONSE";
 
-    final public static String SUCCESS = "SUCCESS"; //new email created in ok
+    final public static String SUCCESS = "SUCCESS"; //new email created ok
     final public static String FAIL = "FAIL"; // new email creation failure
 
 
@@ -53,7 +54,6 @@ public class NewEmailResponse extends Command{
             }
             line = (String)in.readLine();
         }
-
     }
 
     public String createPacket(){

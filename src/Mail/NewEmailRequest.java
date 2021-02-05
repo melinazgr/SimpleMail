@@ -4,7 +4,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 
 public class NewEmailRequest extends Command {
-    private Email newEmail;
     private String sender, receiver, subject, mainbody;
 
     final public static String COMMANDNAME = "COMMAND:NEW";

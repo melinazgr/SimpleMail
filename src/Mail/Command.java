@@ -15,6 +15,8 @@ public abstract class Command {
         LogoutResponse,
         NewEmail,
         NewEmailResponse,
+        ShowEmails,
+        ShowEmailsResponse,
         ReadEmail,
         ReadEmailResponse,
         DeleteEmail,
@@ -24,7 +26,6 @@ public abstract class Command {
     public abstract CommandType getType();
 
     public static Command parse (BufferedReader in) throws IOException, InterruptedException {
-        System.out.println("reading input");
 
         while(!in.ready()){
             Thread.sleep(500);
@@ -32,10 +33,6 @@ public abstract class Command {
         }
 
         String command = (String)in.readLine();
-        System.out.println("command : " +command);
-
-//        System.out.println("length : " + command.length());
-//        System.out.println("command : " +command);
 
         if(command == null || command.length() == 0){
             System.out.println("Null received");
@@ -127,7 +124,6 @@ public abstract class Command {
             System.out.println("Unknown packet: "+ command);
         }
 
-        //TODO ALL PACKETS
         return null;
     }
 
@@ -135,4 +131,3 @@ public abstract class Command {
 
     public abstract String createPacket();
 }
-

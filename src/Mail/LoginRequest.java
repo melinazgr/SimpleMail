@@ -36,8 +36,6 @@ public class LoginRequest extends Command{
         this.password = password;
     }
 
-    //TODO get set pwd username
-
     public String createPacket(){
 
         return createPacket(this.username, this.password);

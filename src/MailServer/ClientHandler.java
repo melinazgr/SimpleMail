@@ -76,12 +76,41 @@ public class ClientHandler extends Thread{
                     out.print(response.createPacket());
                     out.flush();
                 }
+
+                else if(nextCommand.getType() == Command.CommandType.ShowEmails){
+                    ShowEmailsResponse response;
+                    if(currUsername == null){
+                        response = new ShowEmailsResponse(ShowEmailsResponse.FAIL, "User not logged in.");
+                    }
+                    else{
+                        ShowEmailsRequest showEmailsRequest = (ShowEmailsRequest) nextCommand;
+                        response = handleShowEmails(showEmailsRequest);
+                    }
+
+                    out.print(response.createPacket());
+                    out.flush();
+                }
             }
             while (nextCommand.getType() != Command.CommandType.Logout);
         }
         catch(IOException | InterruptedException e){
             System.out.println("IOException");
         }
+    }
+
+    private ShowEmailsResponse handleShowEmails(ShowEmailsRequest req) {
+        Account user = AccountManager.getInstance().findAccount(req.getUsername());
+        ShowEmailsResponse response = new ShowEmailsResponse();
+
+        if(user != null){
+            response.setMailbox(user.getMailbox());
+            response.setErrorCode(NewEmailResponse.SUCCESS);
+        }
+        else{
+            response.setErrorCode(NewEmailResponse.FAIL);
+            response.setErrorMessage("Invalid Receiver Username");
+        }
+        return response;
     }
 
     private NewEmailResponse handleNewEmail(NewEmailRequest req) {
@@ -121,7 +150,7 @@ public class ClientHandler extends Thread{
             }
             else{
                 response.setErrorCode(RegisterResponse.FAIL);
-                System.out.println("Invalid Username or Password");
+                System.out.println("Invalid Userna me or Password");
             }
         }
         else{

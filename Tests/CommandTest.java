@@ -36,5 +36,3 @@ class CommandTest {
     }
 }
 
-//todo menu
-//

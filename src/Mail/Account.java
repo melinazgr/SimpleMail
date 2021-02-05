@@ -16,6 +16,7 @@ public class Account {
     }
 
 
+
     public boolean getLogin() {
         return isLogin;
     }
@@ -67,4 +68,5 @@ public class Account {
             }
         }
     }
+
 }
