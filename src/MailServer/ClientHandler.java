@@ -35,22 +35,28 @@ public class ClientHandler extends Thread{
                 }
 
                 // requests
-                if(nextCommand.getType() == Command.CommandType.Register){
-                    RegisterRequest c = (RegisterRequest)nextCommand;
-                    System.out.println("Register user: " + c.getUsername());
 
-                    RegisterResponse response = handleRegister(c);
+                // register
+                if(nextCommand.getType() == Command.CommandType.Register){
+                    RegisterRequest user = (RegisterRequest)nextCommand;
+                    System.out.println("Register user: " + user.getUsername());
+
+                    RegisterResponse response = handleRegister(user);
                     out.print(response.createPacket());
                     out.flush();
                     System.out.println("response sent");
                 }
 
+                // log in
                 else if(nextCommand.getType() == Command.CommandType.Login){
-                    LoginRequest c = (LoginRequest) nextCommand;
-                    System.out.println("Login user: " + c.getUsername());
-                    currUsername = c.getUsername();
+                    LoginRequest user = (LoginRequest) nextCommand;
+                    System.out.println("Login user: " + user.getUsername());
+
+                    LoginResponse response = handleLogin(user);
+                    out.print(response.createPacket());
+                    out.flush();
+                    currUsername = user.getUsername();
                     isLogin = true;
-                    //todo validate user
                 }
 
                 if(nextCommand.getType() == Command.CommandType.Logout){
@@ -64,6 +70,27 @@ public class ClientHandler extends Thread{
         }
     }
 
+    private LoginResponse handleLogin(LoginRequest req) {
+        Account acc = AccountManager.getInstance().findAccount(req.getUsername());
+        LoginResponse response = new LoginResponse();
+
+        if(acc != null){
+            if(acc.getPassword().equals(req.getPassword())){
+                response.setErrorCode(LoginResponse.SUCCESS);
+                System.out.println("User logged in");
+            }
+            else{
+                response.setErrorCode(RegisterResponse.FAIL);
+                System.out.println("Invalid Username or Password");
+            }
+        }
+        else{
+            response.setErrorCode(RegisterResponse.FAIL);
+            System.out.println("User log in failed");
+        }
+        return response;
+    }
+
 
     public RegisterResponse handleRegister (RegisterRequest req){
         Account acc = AccountManager.getInstance().findAccount(req.getUsername());
@@ -75,7 +102,6 @@ public class ClientHandler extends Thread{
 
             response.setErrorCode(RegisterResponse.SUCCESS);
             System.out.println("User created");
-
         }
         else{
             response.setErrorCode(RegisterResponse.FAIL);

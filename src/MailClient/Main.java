@@ -1,9 +1,6 @@
 package MailClient;
 
-import Mail.Command;
-import Mail.LogoutRequest;
-import Mail.RegisterRequest;
-import Mail.RegisterResponse;
+import Mail.*;
 
 import java.io.*;
 import java.net.*;
@@ -84,47 +81,21 @@ public class Main {
         Scanner scanner = new Scanner(System.in);
         String message = "";
 
-        System.out.println("before menu");
-
         while(!message.equalsIgnoreCase("exit")){
             //todo main menu
 
-            System.out.println("MAIN MENU: SIGNUP / LOGIN / EXIT");
+            System.out.println("==========\n" +
+                                "> LogIn\n" +
+                                "> SignUp\n" +
+                                "> Exit\n" +
+                                "==========");
             message = scanner.next();
 
             if(message.equalsIgnoreCase("signup")){
-                System.out.println("Type your username: ");
-                String username = scanner.next();
-
-                System.out.println("Type your password: ");
-                String password = scanner.next();
-
-                if(validateUser(username, password)){
-                    RegisterRequest req = new RegisterRequest();
-
-                    req.setUsername(username);
-                    req.setPassword(password);
-
-                    out.print(req.createPacket());
-                    out.flush();
-
-                    Command nextCommand = Command.parse(in);
-                    System.out.println("got response");
-
-                    if(nextCommand.getType() == Command.CommandType.RegisterResponse){
-                        RegisterResponse res = (RegisterResponse) nextCommand;
-
-                        if(res.getErrorCode().equals(RegisterResponse.SUCCESS)){
-                            System.out.println("User Created Successfully");
-                        }
-                        else{
-                            System.out.println("User Creation Failed:" + res.getErrorCode());
-                        }
-                    }
-                    else{
-                        System.out.println("Unexpected Response.");
-                    }
-                }
+                registerOption(out, in, scanner);
+            }
+            else if(message.equalsIgnoreCase("login")){
+                loginOption(out, in, scanner);
             }
         }
 
@@ -132,7 +103,106 @@ public class Main {
         in.close();
     }
 
+    private static void loginOption(PrintWriter out, BufferedReader in, Scanner scanner) throws IOException, InterruptedException {
+        System.out.println("----------\n" +
+                            "Type your username:\n" +
+                            "----------");
+        String username = scanner.next();
+
+        System.out.println("----------\n" +
+                            "Type your password:\n"+
+                            "----------");
+        String password = scanner.next();
+
+        if(validateUser(username, password)){
+            LoginRequest req = new LoginRequest();
+
+            req.setUsername(username);
+            req.setPassword(password);
+
+            out.print(req.createPacket());
+            out.flush();
+
+            Command nextCommand = Command.parse(in);
+
+            if(nextCommand.getType() == Command.CommandType.LoginResponse){
+                LoginResponse res = (LoginResponse) nextCommand;
+
+                if(res.getErrorCode().equals(LoginResponse.SUCCESS)){
+                    System.out.println("----------\n" +
+                                        "User Logged In Successfully\n" +
+                                        "----------");
+                }
+                else{
+                    System.out.println("----------\n" +
+                                        "User Login Failed\n" +
+                                        "----------");
+                }
+            }
+            else{
+                System.out.println("----------\n" +
+                                    "Unexpected Response.\n"+
+                                    "----------");
+            }
+        }
+    }
+
+    private static void registerOption(PrintWriter out, BufferedReader in, Scanner scanner) throws IOException, InterruptedException {
+        System.out.println("----------\n" +
+                            "Type your username:\n" +
+                            "----------");
+        String username = scanner.next();
+
+        System.out.println("----------\n" +
+                            "Type your password:\n"+
+                            "----------");
+        String password = scanner.next();
+
+        if(validateUser(username, password)){
+            RegisterRequest req = new RegisterRequest();
+
+            req.setUsername(username);
+            req.setPassword(password);
+
+            out.print(req.createPacket());
+            out.flush();
+
+            Command nextCommand = Command.parse(in);
+
+            if(nextCommand.getType() == Command.CommandType.RegisterResponse){
+                RegisterResponse res = (RegisterResponse) nextCommand;
+
+                if(res.getErrorCode().equals(RegisterResponse.SUCCESS)){
+                    System.out.println("----------\n" +
+                                        "User created Successfully\n" +
+                                        "----------");
+                }
+                else{
+                    System.out.println("----------\n" +
+                                        "User Login Failed\n" +
+                                        "----------");
+                }
+            }
+            else{
+                System.out.println("----------\n" +
+                                    "Unexpected Response.\n"+
+                                    "----------");
+            }
+        }
+    }
+
     private static boolean validateUser(String username, String password) {
-        return true;
+
+        if(username.contains("@")){
+            String domain = username.substring(username.indexOf("@"));
+            if(domain.contains(".")){
+                return true;
+            }
+        }
+
+        System.out.println("----------\n" +
+                            "Invalid Username\n" +
+                            "----------" );
+        return false;
     }
 }
