@@ -26,11 +26,11 @@ public abstract class Command {
     public abstract CommandType getType();
 
     public static Command parse (BufferedReader in) throws IOException, InterruptedException {
-
-        while(!in.ready()){
-            Thread.sleep(500);
-            System.out.print(".");
-        }
+//
+//        while(!in.ready()){
+//            Thread.sleep(500);
+//            System.out.print(".");
+//        }
 
         String command = (String)in.readLine();
 
@@ -123,6 +123,8 @@ public abstract class Command {
         else{
             System.out.println("Unknown packet: "+ command);
         }
+
+
 
         return null;
     }

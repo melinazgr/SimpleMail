@@ -35,6 +35,8 @@ public class ClientHandler extends Thread{
                     break;
                 }
 
+                System.out.println("received " + nextCommand.getType());
+
                 // requests
 
                 // register
@@ -152,8 +154,11 @@ public class ClientHandler extends Thread{
                 user.deleteEmail(req.getEmailID());
                 response.setErrorCode(DeleteEmailResponse.SUCCESS);
             }
-            response.setErrorCode(DeleteEmailResponse.FAIL);
-            response.setErrorMessage("Email does not exist.");
+            else{
+                response.setErrorCode(DeleteEmailResponse.FAIL);
+                response.setErrorMessage("Email does not exist.");
+            }
+
         }
         else{
             response.setErrorCode(DeleteEmailResponse.FAIL);
