@@ -103,12 +103,44 @@ public class ClientHandler extends Thread{
                     out.print(response.createPacket());
                     out.flush();
                 }
+                else if(nextCommand.getType() == Command.CommandType.ReadEmail){
+                    ReadEmailResponse response;
+                    if(currUsername == null){
+                        response = new ReadEmailResponse(ReadEmailResponse.FAIL, "User not logged in.");
+                    }
+                    else{
+                        ReadEmailRequest readEmailRequest = (ReadEmailRequest) nextCommand;
+                        response = handleReadEmail(readEmailRequest);
+                    }
+
+                    out.print(response.createPacket());
+                    out.flush();
+                }
             }
             while (nextCommand.getType() != Command.CommandType.Logout);
         }
         catch(IOException | InterruptedException e){
             System.out.println("IOException");
         }
+    }
+
+    private ReadEmailResponse handleReadEmail(ReadEmailRequest req) {
+        Account user = AccountManager.getInstance().findAccount(req.getUsername());
+        ReadEmailResponse response = new ReadEmailResponse();
+
+        if(user != null){
+            response.setEmail(user.findEmail(req.getEmailID()));
+
+            if(user.findEmail(req.getEmailID()).getIsNew()){
+                user.findEmail(req.getEmailID()).setIsNew(false);
+            }
+            response.setErrorCode(ReadEmailResponse.SUCCESS);
+        }
+        else{
+            response.setErrorCode(ReadEmailResponse.FAIL);
+            response.setErrorMessage("Invalid Receiver Username");
+        }
+        return response;
     }
 
     private DeleteEmailResponse handleDeleteEmail(DeleteEmailRequest req) {
@@ -118,13 +150,13 @@ public class ClientHandler extends Thread{
         if(user != null){
             if(user.findEmail(req.getEmailID()) != null){
                 user.deleteEmail(req.getEmailID());
-                response.setErrorCode(NewEmailResponse.SUCCESS);
+                response.setErrorCode(DeleteEmailResponse.SUCCESS);
             }
-            response.setErrorCode(NewEmailResponse.FAIL);
+            response.setErrorCode(DeleteEmailResponse.FAIL);
             response.setErrorMessage("Email does not exist.");
         }
         else{
-            response.setErrorCode(NewEmailResponse.FAIL);
+            response.setErrorCode(DeleteEmailResponse.FAIL);
             response.setErrorMessage("Invalid Receiver Username");
         }
         return response;
@@ -136,10 +168,12 @@ public class ClientHandler extends Thread{
 
         if(user != null){
             response.setMailbox(user.getMailbox());
-            response.setErrorCode(NewEmailResponse.SUCCESS);
+            response.setErrorCode(ShowEmailsResponse.SUCCESS);
+            System.out.println("Show emails for user: " + req.getUsername() + " #" + user.getMailbox().size());
+
         }
         else{
-            response.setErrorCode(NewEmailResponse.FAIL);
+            response.setErrorCode(ShowEmailsResponse.FAIL);
             response.setErrorMessage("Invalid Receiver Username");
         }
         return response;
@@ -156,7 +190,7 @@ public class ClientHandler extends Thread{
             email.setReceiver(receiver.getUsername());
             email.setSubject(req.getSubject());
             email.setMainbody(req.getMainbody());
-            email.setNew(true);
+            email.setIsNew(true);
 
             receiver.addEmail(email);
             response.setErrorCode(NewEmailResponse.SUCCESS);

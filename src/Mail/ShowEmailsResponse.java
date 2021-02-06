@@ -9,19 +9,18 @@ public class ShowEmailsResponse extends Command{
     private String errorMessage;
     private ArrayList<Email> mailbox;
 
-
     final public static String COMMANDNAME = "RESPONSE:SHOW";
     final public static String ERROR = "ERRORCODE:";
     final public static String END = "ENDRESPONSE";
 
-    final public static String ID = "ID:";
-    final public static String FROM = "FROM:";
-    final public static String SUBJECT = "SUBJECT:";
+    final public static String MAILCOUNT = "MAILCOUNT:";
 
     final public static String SUCCESS = "SUCCESS"; //show emails ok
     final public static String FAIL = "FAIL"; // show emails failure
 
-    public ShowEmailsResponse(){}
+    public ShowEmailsResponse(){
+        this.mailbox = new ArrayList<Email>();
+    }
 
     public ShowEmailsResponse(String errorCode, String errorMessage){
         this.errorCode = errorCode;
@@ -55,6 +54,7 @@ public class ShowEmailsResponse extends Command{
 
     @Override
     public void parsePacket(BufferedReader in) throws IOException {
+        this.mailbox.clear();
         String line = (String) in.readLine();
 
         while (!line.startsWith(END)) {
@@ -62,23 +62,29 @@ public class ShowEmailsResponse extends Command{
                 this.errorCode = line.substring(ERROR.length());
             }
 
-            for (Email e : mailbox) {
-                if (line.startsWith(ID)) {
-                    e.setId(line.substring(ID.length()));
+            else if (line.startsWith(MAILCOUNT)) {
+                int count = Integer.parseInt(line.substring(MAILCOUNT.length()));
+
+                for(int i = 0; i < count; i++){
+                    Email email = new Email();
+
                     line = (String) in.readLine();
+                    email.setId(line);
 
-                    if (line.startsWith(FROM)) {
-                        e.setId(line.substring(FROM.length()));
-                        line = (String) in.readLine();
+                    line = (String) in.readLine();
+                    email.setSender(line);
 
-                        if (line.startsWith(SUBJECT)) {
-                            e.setSubject(line.substring(SUBJECT.length()));
-                        }
-                    }
+                    line = (String) in.readLine();
+                    email.setSubject(line);
+
+                    line = (String) in.readLine();
+                    email.setIsNew( Boolean.parseBoolean(line));
+
+                    this.mailbox.add(email);
                 }
-
-                line = (String) in.readLine();
             }
+
+            line = (String) in.readLine();
         }
     }
 
@@ -89,13 +95,16 @@ public class ShowEmailsResponse extends Command{
         sb.append(COMMANDNAME + '\n');
         sb.append(ERROR + errorCode + "\n");
 
+        sb.append(MAILCOUNT + mailbox.size() + "\n");
         for(Email e : mailbox){
-            sb.append(ID + e.getId() + "\n");
-            sb.append(FROM + e.getSender() + "\n");
-            sb.append(SUBJECT + e.getSubject() + "\n");
+            sb.append(e.getId() + "\n");
+            sb.append(e.getSender() + "\n");
+            sb.append(e.getSubject() + "\n");
+            sb.append(e.getIsNew() + "\n");
+
         }
 
-        sb.append(END);
+        sb.append(END + "\n");
 
         return sb.toString();
     }

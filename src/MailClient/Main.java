@@ -117,7 +117,7 @@ public class Main {
                     showEmailsOption(out, in, scanner);
                 }
                 else if(message.equalsIgnoreCase("reademail") || message.equals("3")){
-                    showEmailsOption(out, in, scanner);
+                    readEmailOption(out, in, scanner);
                 }
                 else if(message.equalsIgnoreCase("deleteemail") || message.equals("4")){
                     deleteEmailOption(out, in, scanner);
@@ -131,6 +131,42 @@ public class Main {
 
         out.close();
         in.close();
+    }
+
+    private static void readEmailOption(PrintWriter out, BufferedReader in, Scanner scanner) throws IOException, InterruptedException {
+        ReadEmailRequest req = new ReadEmailRequest();
+        System.out.println(SEPARATOR + "Email ID: ");
+        String emailID = scanner.next();
+
+        req.setUsername(currUsername);
+        req.setEmailID(emailID);
+
+        out.print(req.createPacket());
+        out.flush();
+
+        Command nextCommand = Command.parse(in);
+
+        if(nextCommand.getType() == Command.CommandType.ReadEmailResponse){
+            ReadEmailResponse res = (ReadEmailResponse) nextCommand;
+
+            if(res.getErrorCode().equals(ReadEmailResponse.SUCCESS)){
+
+                StringBuilder sb = new StringBuilder();
+
+                sb.append("EMAIL ID: " + res.getEmail().getId());
+                sb.append("\nFROM: " + res.getEmail().getSender());
+                sb.append("\nSUBJECT: " + res.getEmail().getSubject());
+                sb.append("\n\n: " + res.getEmail().getMainbody());
+
+                System.out.println(sb.toString());
+            }
+            else{
+                System.out.println(SEPARATOR + "Read email Failed");
+            }
+        }
+        else{
+            System.out.println(SEPARATOR + "Unexpected Response.");
+        }
     }
 
     private static void deleteEmailOption(PrintWriter out, BufferedReader in, Scanner scanner) throws IOException, InterruptedException {
@@ -172,14 +208,20 @@ public class Main {
         req.setUsername(currUsername);
 
         out.print(req.createPacket());
+        System.out.println("Packet created");
         out.flush();
 
         Command nextCommand = Command.parse(in);
+        System.out.println("command parsed");
+
+        System.out.println(nextCommand.getType());
 
         if(nextCommand.getType() == Command.CommandType.ShowEmailsResponse){
             ShowEmailsResponse res = (ShowEmailsResponse) nextCommand;
 
-            if(res.getErrorCode().equals(NewEmailResponse.SUCCESS)){
+            System.out.println("User: " + currUsername + " emails: " + res.getMailbox().size());
+
+            if(res.getErrorCode().equals(ShowEmailsResponse.SUCCESS)){
 
                 StringBuilder sb = new StringBuilder();
 
@@ -190,7 +232,7 @@ public class Main {
                     sb.append(e.getId());
                     sb.append(". ");
 
-                    if(e.isNew()){
+                    if(e.getIsNew()){
                         sb.append("[NEW]  ");
                     }
                     else{
@@ -224,8 +266,6 @@ public class Main {
         // todo read multiple line + sysout
 
         String mainbody = scanner.next();
-
-
 
         NewEmailRequest req = new NewEmailRequest();
 

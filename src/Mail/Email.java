@@ -15,7 +15,7 @@ public class Email {
         this.isNew = isNew;
     }
 
-    public boolean isNew() {
+    public boolean getIsNew() {
         return isNew;
     }
 
@@ -39,8 +39,8 @@ public class Email {
         return mainbody;
     }
 
-    public void setNew(boolean aNew) {
-        isNew = aNew;
+    public void setIsNew(boolean isNew) {
+        this.isNew = isNew;
     }
 
     public void setId(String id) {

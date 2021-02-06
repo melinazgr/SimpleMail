@@ -57,16 +57,11 @@ public class DeleteEmailRequest extends Command {
     }
 
     @Override
-    public String createPacket(){
-
-        return createPacket(this.emailID, this.username);
-    }
-
-    public static String createPacket(String emailID, String username){
+    public String createPacket() {
         String s = COMMANDNAME + "\n" +
-                    USERNAME + username + "\n" +
-                    EMAIL + emailID + "\n" +
-                    END +  "\n";
+                USERNAME + username + "\n" +
+                EMAIL + emailID + "\n" +
+                END +  "\n";
 
         return s;
     }
