@@ -77,6 +77,19 @@ public class ClientHandler extends Thread{
                     out.flush();
                 }
 
+                else if(nextCommand.getType() == Command.CommandType.DeleteEmail){
+                    DeleteEmailResponse response;
+                    if(currUsername == null){
+                        response = new DeleteEmailResponse(DeleteEmailResponse.FAIL, "User not logged in.");
+                    }
+                    else{
+                        DeleteEmailRequest deleteEmailRequest = (DeleteEmailRequest) nextCommand;
+                        response = handleDeleteEmail(deleteEmailRequest);
+                    }
+                    out.print(response.createPacket());
+                    out.flush();
+                }
+
                 else if(nextCommand.getType() == Command.CommandType.ShowEmails){
                     ShowEmailsResponse response;
                     if(currUsername == null){
@@ -96,6 +109,25 @@ public class ClientHandler extends Thread{
         catch(IOException | InterruptedException e){
             System.out.println("IOException");
         }
+    }
+
+    private DeleteEmailResponse handleDeleteEmail(DeleteEmailRequest req) {
+        Account user = AccountManager.getInstance().findAccount(req.getUsername());
+        DeleteEmailResponse response = new DeleteEmailResponse();
+
+        if(user != null){
+            if(user.findEmail(req.getEmailID()) != null){
+                user.deleteEmail(req.getEmailID());
+                response.setErrorCode(NewEmailResponse.SUCCESS);
+            }
+            response.setErrorCode(NewEmailResponse.FAIL);
+            response.setErrorMessage("Email does not exist.");
+        }
+        else{
+            response.setErrorCode(NewEmailResponse.FAIL);
+            response.setErrorMessage("Invalid Receiver Username");
+        }
+        return response;
     }
 
     private ShowEmailsResponse handleShowEmails(ShowEmailsRequest req) {

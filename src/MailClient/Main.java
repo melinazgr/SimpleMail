@@ -120,7 +120,7 @@ public class Main {
                     showEmailsOption(out, in, scanner);
                 }
                 else if(message.equalsIgnoreCase("deleteemail") || message.equals("4")){
-                    showEmailsOption(out, in, scanner);
+                    deleteEmailOption(out, in, scanner);
                 }
                 else if(message.equalsIgnoreCase("logout") || message.equals("5")){
                     // todo logout
@@ -133,25 +133,38 @@ public class Main {
         in.close();
     }
 
-    public static void showMenu(int state){
-        if(state == 1){
-            System.out.println("==========\n" +
-                    "1. LogIn\n" +
-                    "2. SignUp\n" +
-                    "3. Exit\n" +
-                    "==========");
+    private static void deleteEmailOption(PrintWriter out, BufferedReader in, Scanner scanner) throws IOException, InterruptedException {
+        System.out.println(SEPARATOR + "Email ID: ");
+        String emailID = scanner.next();
+
+        DeleteEmailRequest req = new DeleteEmailRequest();
+
+        req.setUsername(currUsername);
+        req.setEmailID(emailID);
+
+        out.print(req.createPacket());
+        out.flush();
+
+        Command nextCommand = Command.parse(in);
+
+        if(nextCommand.getType() == Command.CommandType.DeleteEmailResponse){
+            DeleteEmailResponse res = (DeleteEmailResponse) nextCommand;
+
+            if(res.getErrorCode().equals(DeleteEmailResponse.SUCCESS)){
+                System.out.println(SEPARATOR +
+                        "Email " + req.getEmailID() + " deleted!" );
+            }
+            else{
+                System.out.println(SEPARATOR +
+                        "Email Deletion Failed.");
+            }
         }
         else{
-            System.out.println("===============\n" +
-                    "1. NewEmail\n" +
-                    "2. ShowEmails\n" +
-                    "3. ReadEmail\n" +
-                    "4. DeleteEmail\n" +
-                    "5. LogOut\n" +
-                    "6. Exit\n" +
-                    "===============");
+            System.out.println(SEPARATOR +
+                    "Unexpected Response.");
         }
     }
+
 
     private static void showEmailsOption(PrintWriter out, BufferedReader in, Scanner scanner) throws IOException, InterruptedException {
         ShowEmailsRequest req = new ShowEmailsRequest();
@@ -209,7 +222,10 @@ public class Main {
 
         System.out.println(SEPARATOR + "Main Body:");
         // todo read multiple line + sysout
+
         String mainbody = scanner.next();
+
+
 
         NewEmailRequest req = new NewEmailRequest();
 
@@ -322,6 +338,27 @@ public class Main {
                 System.out.println(SEPARATOR +
                                     "Unexpected Response.");
             }
+        }
+    }
+
+
+    public static void showMenu(int state){
+        if(state == 1){
+            System.out.println("==========\n" +
+                    "1. LogIn\n" +
+                    "2. SignUp\n" +
+                    "3. Exit\n" +
+                    "==========");
+        }
+        else{
+            System.out.println("===============\n" +
+                    "1. NewEmail\n" +
+                    "2. ShowEmails\n" +
+                    "3. ReadEmail\n" +
+                    "4. DeleteEmail\n" +
+                    "5. LogOut\n" +
+                    "6. Exit\n" +
+                    "===============");
         }
     }
 

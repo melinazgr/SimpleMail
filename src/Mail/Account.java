@@ -61,6 +61,7 @@ public class Account {
     }
 
     public void deleteEmail(String id){
+        // todo change ids when email deleted
         for (int i = 0; i < mailbox.size(); i++){
             if(mailbox.get(i).getId().equals(id)){
                 mailbox.remove(i);
