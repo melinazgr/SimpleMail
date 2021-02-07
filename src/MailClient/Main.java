@@ -155,10 +155,12 @@ public class Main {
 
                 StringBuilder sb = new StringBuilder();
 
-                sb.append("EMAIL ID: " + res.getEmail().getId());
+                sb.append(SEPARATOR);
+                sb.append("ID: " + res.getEmail().getId());
                 sb.append("\nFROM: " + res.getEmail().getSender());
-                sb.append("\nSUBJECT: " + res.getEmail().getSubject());
-                sb.append("\n\n: " + res.getEmail().getMainbody());
+                sb.append("\nSUBJECT: " + res.getEmail().getSubject() + "\n");
+                sb.append(SEPARATOR);
+                sb.append("\nMAIN BODY\n" + res.getEmail().getMainbody() + "\n");
 
                 System.out.println(sb.toString());
             }
@@ -263,9 +265,14 @@ public class Main {
         String subject = scanner.next();
 
         System.out.println(SEPARATOR + "Main Body:");
-        // todo read multiple line + sysout
 
-        String mainbody = scanner.next();
+        String mainbody = "";
+        String line  = scanner.nextLine();
+
+        while(mainbody.equals("") || !line.equals("")){
+            mainbody += line;
+            line  = scanner.nextLine();
+        }
 
         NewEmailRequest req = new NewEmailRequest();
 
