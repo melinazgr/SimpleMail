@@ -3,6 +3,12 @@ package Mail;
 import java.io.BufferedReader;
 import java.io.IOException;
 
+/**
+ * handles delete email request
+ *
+ * @author Melina Zikou
+ *
+ */
 public class DeleteEmailRequest extends Command {
     private String emailID, username;
 
@@ -18,12 +24,12 @@ public class DeleteEmailRequest extends Command {
         this.username = username;
     }
 
-    public void setEmailID(String emailID) {
-        this.emailID = emailID;
-    }
-
     public String getEmailID() {
         return emailID;
+    }
+
+    public void setEmailID(String emailID) {
+        this.emailID = emailID;
     }
 
     public String getUsername() {
@@ -53,7 +59,6 @@ public class DeleteEmailRequest extends Command {
 
             line = (String)in.readLine();
         }
-
     }
 
     @Override

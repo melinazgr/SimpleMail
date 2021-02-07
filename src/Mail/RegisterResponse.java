@@ -3,8 +3,13 @@ package Mail;
 import java.io.BufferedReader;
 import java.io.IOException;
 
+/**
+ * handles Register response
+ *
+ * @author Melina Zikou
+ *
+ */
 public class RegisterResponse extends Command {
-
     private String errorCode;
 
     final public static String COMMANDNAME = "RESPONSE:REGISTER";
@@ -14,15 +19,33 @@ public class RegisterResponse extends Command {
     final public static String SUCCESS = "SUCCESS"; //user created ok
     final public static String FAIL = "FAIL"; // user exists / registration failure
 
-    public RegisterResponse(){
+    public RegisterResponse(){}
+
+    public String getErrorCode(){
+        return this.errorCode;
     }
 
     public void setErrorCode(String errorCode) {
         this.errorCode = errorCode;
     }
 
-    public String getErrorCode(){
-        return this.errorCode;
+    @Override
+    public CommandType getType() {
+        return CommandType.RegisterResponse;
+    }
+
+
+    public void parsePacket(BufferedReader in) throws IOException {
+        String line = (String)in.readLine();
+
+        while(!line.startsWith(END)){
+            if(line.startsWith(ERROR)){
+                this.errorCode = line.substring(ERROR.length());
+                System.out.println("Got errorcode:" + this.errorCode);
+            }
+
+            line = (String)in.readLine();
+        }
     }
 
     @Override
@@ -36,25 +59,5 @@ public class RegisterResponse extends Command {
                     END +  "\n";
 
         return s;
-    }
-
-    @Override
-    public CommandType getType() {
-        return CommandType.RegisterResponse;
-    }
-
-    public void parsePacket(BufferedReader in) throws IOException {
-
-        String line = (String)in.readLine();
-
-        while(!line.startsWith(END)){
-            if(line.startsWith(ERROR)){
-                this.errorCode = line.substring(ERROR.length());
-                System.out.println("Got errorcode:" + this.errorCode);
-
-            }
-            line = (String)in.readLine();
-        }
-
     }
 }

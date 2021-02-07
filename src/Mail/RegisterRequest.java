@@ -3,6 +3,12 @@ package Mail;
 import java.io.BufferedReader;
 import java.io.IOException;
 
+/**
+ * handles Register request
+ *
+ * @author Melina Zikou
+ *
+ */
 public class RegisterRequest extends Command {
 
     private String username, password;
@@ -23,45 +29,25 @@ public class RegisterRequest extends Command {
         return username;
     }
 
-    public String getPassword() {
-        return password;
-    }
-
     public void setUsername(String username) {
         this.username = username;
+    }
+
+    public String getPassword() {
+        return password;
     }
 
     public void setPassword(String password) {
         this.password = password;
     }
 
-    //TODO get set pwd username
-
-    public String createPacket(){
-
-        return createPacket(this.username, this.password);
-    }
-
-    public static String createPacket(String username, String password){
-        String s = COMMANDNAME + "\n" +
-                USERNAME + username + "\n" +
-                PASSWORD + password + "\n" +
-                END +  "\n";
-
-        return s;
-    }
-
-
     @Override
     public CommandType getType() {
         return CommandType.Register;
-
     }
 
     public void parsePacket(BufferedReader in) throws IOException {
-
         String line = (String)in.readLine();
-
 
         while(!line.startsWith(END)){
             if(line.startsWith(USERNAME)){
@@ -73,7 +59,18 @@ public class RegisterRequest extends Command {
 
             line = (String)in.readLine();
         }
-
     }
 
+    public String createPacket(){
+        return createPacket(this.username, this.password);
+    }
+
+    public static String createPacket(String username, String password){
+        String s = COMMANDNAME + "\n" +
+                USERNAME + username + "\n" +
+                PASSWORD + password + "\n" +
+                END +  "\n";
+
+        return s;
+    }
 }

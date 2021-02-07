@@ -3,6 +3,12 @@ package Mail;
 import java.io.BufferedReader;
 import java.io.IOException;
 
+/**
+ * handles Read Email request
+ *
+ * @author Melina Zikou
+ *
+ */
 public class ReadEmailRequest extends Command {
     private String username, emailID;
 
@@ -46,7 +52,6 @@ public class ReadEmailRequest extends Command {
 
             line = (String)in.readLine();
         }
-
     }
 
     @Override

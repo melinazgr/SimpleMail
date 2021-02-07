@@ -3,16 +3,22 @@ package Mail;
 import java.io.BufferedReader;
 import java.io.IOException;
 
+/**
+ * handles delete email response
+ *
+ * @author Melina Zikou
+ *
+ */
 public class DeleteEmailResponse extends Command{
     private String errorCode;
-    private String errorMessage;
+    private String errorMessage; // in case of error - state why it failed
 
     final public static String COMMANDNAME = "RESPONSE:DELETE";
     final public static String ERROR = "ERRORCODE:";
     final public static String END = "ENDRESPONSE";
 
-    final public static String SUCCESS = "SUCCESS"; //new email created ok
-    final public static String FAIL = "FAIL"; // new email creation failure
+    final public static String SUCCESS = "SUCCESS"; //delete email ok
+    final public static String FAIL = "FAIL"; //delete email creation failure
 
     public DeleteEmailResponse(){}
 
@@ -21,12 +27,12 @@ public class DeleteEmailResponse extends Command{
         this.errorMessage = errorMessage;
     }
 
-    public void setErrorMessage(String errorMessage) {
-        this.errorMessage = errorMessage;
-    }
-
     public String getErrorMessage() {
         return errorMessage;
+    }
+
+    public void setErrorMessage(String errorMessage) {
+        this.errorMessage = errorMessage;
     }
 
     public String getErrorCode() {
@@ -52,7 +58,6 @@ public class DeleteEmailResponse extends Command{
             }
             line = (String)in.readLine();
         }
-
     }
 
     @Override

@@ -4,8 +4,16 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.OutputStream;
 
+/**
+ * Handles all the types of commands
+ *
+ * @author Melina Zikou
+ */
 public abstract class Command {
 
+    /**
+     * Enum with all the possible command types
+     */
     public enum CommandType{
         Register,
         RegisterResponse,
@@ -23,10 +31,26 @@ public abstract class Command {
         DeleteEmailResponse
     }
 
+    /**
+     * In each class that inherits Command
+     * the type of the packet is set according to
+     * the enum above
+     * @return the type
+     */
     public abstract CommandType getType();
 
+    /**
+     * Parses the command packets and creates the
+     * command object needed according to the keyword
+     * the packet starts with.
+     *
+     * @param in stream to read from
+     * @return a command packet
+     * @throws IOException
+     * @throws InterruptedException
+     */
     public static Command parse (BufferedReader in) throws IOException, InterruptedException {
-//
+
 //        while(!in.ready()){
 //            Thread.sleep(500);
 //            System.out.print(".");
@@ -124,15 +148,31 @@ public abstract class Command {
             System.out.println("Unknown packet: "+ command);
         }
 
-
-
         return null;
     }
 
-    public abstract void parsePacket(BufferedReader in) throws IOException;
-
+    /**
+     * Creates a packet
+     * @return String with the commands of the packet
+     */
     public abstract String createPacket();
 
+    /**
+     * parses the packet created
+     * @param in stream to read from
+     * @throws IOException
+     */
+    public abstract void parsePacket(BufferedReader in) throws IOException;
+
+    /**
+     * return all characters from a given String, new lines included.
+     * Used in parsing the main body part of the email.
+     *
+     * @param in stream to read from
+     * @param size of the mainbody
+     * @return String with the right form of the mainbody
+     * @throws IOException
+     */
     public String readString(BufferedReader in, int size) throws IOException {
         char[] buffer = new char[size];
         int bytesLeft = size;

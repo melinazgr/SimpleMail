@@ -3,6 +3,12 @@ package Mail;
 import java.io.BufferedReader;
 import java.io.IOException;
 
+/**
+ * handles login request
+ *
+ * @author Melina Zikou
+ *
+ */
 public class LoginRequest extends Command{
     final public static String COMMANDNAME = "COMMAND:LOGIN";
     final public static String USERNAME = "USERNAME:";
@@ -37,8 +43,12 @@ public class LoginRequest extends Command{
     }
 
     public String createPacket(){
-
         return createPacket(this.username, this.password);
+    }
+
+    @Override
+    public CommandType getType() {
+        return CommandType.Login;
     }
 
     public static String createPacket(String username, String password){
@@ -50,16 +60,9 @@ public class LoginRequest extends Command{
         return s;
     }
 
-
-    @Override
-    public CommandType getType() {
-        return CommandType.Login;
-    }
-
     public void parsePacket(BufferedReader in) throws IOException {
 
         String line = (String)in.readLine();
-
 
         while(!line.startsWith(END)){
             if(line.startsWith(USERNAME)){
@@ -71,6 +74,5 @@ public class LoginRequest extends Command{
 
             line = (String)in.readLine();
         }
-
     }
 }

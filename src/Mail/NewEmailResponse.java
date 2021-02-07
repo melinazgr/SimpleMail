@@ -3,6 +3,12 @@ package Mail;
 import java.io.BufferedReader;
 import java.io.IOException;
 
+/**
+ * handles New Email response
+ *
+ * @author Melina Zikou
+ *
+ */
 public class NewEmailResponse extends Command{
     private String errorCode;
     private String errorMessage;
@@ -14,7 +20,6 @@ public class NewEmailResponse extends Command{
     final public static String SUCCESS = "SUCCESS"; //new email created ok
     final public static String FAIL = "FAIL"; // new email creation failure
 
-
     public NewEmailResponse(){}
 
     public NewEmailResponse(String errorCode, String errorMessage) {
@@ -22,12 +27,12 @@ public class NewEmailResponse extends Command{
         this.errorMessage = errorMessage;
     }
 
-    public void setErrorCode(String errorCode) {
-        this.errorCode = errorCode;
-    }
-
     public String getErrorCode(){
         return this.errorCode;
+    }
+
+    public void setErrorCode(String errorCode) {
+        this.errorCode = errorCode;
     }
 
     public String getErrorMessage() {
@@ -50,7 +55,6 @@ public class NewEmailResponse extends Command{
         while(!line.startsWith(END)){
             if(line.startsWith(ERROR)){
                 this.errorCode = line.substring(ERROR.length());
-
             }
             line = (String)in.readLine();
         }

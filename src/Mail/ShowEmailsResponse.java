@@ -4,6 +4,12 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.ArrayList;
 
+/**
+ * handles Show Emails response
+ *
+ * @author Melina Zikou
+ *
+ */
 public class ShowEmailsResponse extends Command{
     private String errorCode;
     private String errorMessage;
@@ -35,16 +41,16 @@ public class ShowEmailsResponse extends Command{
         this.mailbox = mailbox;
     }
 
-    public void setErrorMessage(String errorMessage) {
-        this.errorMessage = errorMessage;
-    }
-
     public String getErrorCode() {
         return errorCode;
     }
 
     public void setErrorCode(String errorCode) {
         this.errorCode = errorCode;
+    }
+
+    public void setErrorMessage(String errorMessage) {
+        this.errorMessage = errorMessage;
     }
 
     @Override
@@ -61,7 +67,6 @@ public class ShowEmailsResponse extends Command{
             if (line.startsWith(ERROR)) {
                 this.errorCode = line.substring(ERROR.length());
             }
-
             else if (line.startsWith(MAILCOUNT)) {
                 int count = Integer.parseInt(line.substring(MAILCOUNT.length()));
 
@@ -102,7 +107,6 @@ public class ShowEmailsResponse extends Command{
             sb.append(e.getSender() + "\n");
             sb.append(e.getSubject() + "\n");
             sb.append(e.getIsNew() + "\n");
-
         }
 
         sb.append(END + "\n");

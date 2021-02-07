@@ -3,6 +3,12 @@ package Mail;
 import java.io.BufferedReader;
 import java.io.IOException;
 
+/**
+ * handles New Email request
+ *
+ * @author Melina Zikou
+ *
+ */
 public class NewEmailRequest extends Command {
     private String sender, receiver, subject, mainbody;
 
@@ -11,7 +17,6 @@ public class NewEmailRequest extends Command {
     final public static String RECEIVER = "RECEIVER:";
     final public static String SUBJECT = "SUBJECT:";
     final public static String MAINBODYSIZE = "SIZE:";
-    final public static String MAINBODY = "MAINBODY:";
     final public static String END = "ENDCOMMAND";
 
     public NewEmailRequest(){}
@@ -23,36 +28,36 @@ public class NewEmailRequest extends Command {
         this.mainbody = mainbody;
     }
 
-    public void setSender(String sender) {
-        this.sender = sender;
-    }
-
-    public void setReceiver(String receiver) {
-        this.receiver = receiver;
-    }
-
-    public void setSubject(String subject) {
-        this.subject = subject;
-    }
-
-    public void setMainbody(String mainbody) {
-        this.mainbody = mainbody;
-    }
-
     public String getSender() {
         return sender;
+    }
+
+    public void setSender(String sender) {
+        this.sender = sender;
     }
 
     public String getReceiver() {
         return receiver;
     }
 
+    public void setReceiver(String receiver) {
+        this.receiver = receiver;
+    }
+
     public String getSubject() {
         return subject;
     }
 
+    public void setSubject(String subject) {
+        this.subject = subject;
+    }
+
     public String getMainbody() {
         return mainbody;
+    }
+
+    public void setMainbody(String mainbody) {
+        this.mainbody = mainbody;
     }
 
     @Override
@@ -80,7 +85,6 @@ public class NewEmailRequest extends Command {
             }
             line = (String)in.readLine();
         }
-
     }
 
     @Override
@@ -95,6 +99,4 @@ public class NewEmailRequest extends Command {
 
         return s;
     }
-
-
 }

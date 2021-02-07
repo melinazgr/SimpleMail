@@ -3,6 +3,12 @@ package Mail;
 import java.io.BufferedReader;
 import java.io.IOException;
 
+/**
+ * handles login response
+ *
+ * @author Melina Zikou
+ *
+ */
 public class LoginResponse extends Command {
     private String errorCode;
 
@@ -30,16 +36,16 @@ public class LoginResponse extends Command {
         return createPacket(this.errorCode);
     }
 
+    public Command.CommandType getType() {
+        return Command.CommandType.LoginResponse;
+    }
+
     public static String createPacket(String errorCode){
         String s = COMMANDNAME + "\n" +
                 ERROR + errorCode + "\n" +
                 END +  "\n";
 
         return s;
-    }
-
-    public Command.CommandType getType() {
-        return Command.CommandType.LoginResponse;
     }
 
     public void parsePacket(BufferedReader in) throws IOException {
@@ -50,10 +56,9 @@ public class LoginResponse extends Command {
             if(line.startsWith(ERROR)){
                 this.errorCode = line.substring(ERROR.length());
                 System.out.println("Got errorcode:" + this.errorCode);
-
             }
+
             line = (String)in.readLine();
         }
-
     }
 }

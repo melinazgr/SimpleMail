@@ -1,22 +1,34 @@
 package MailClient;
 
 import Mail.*;
-import MailServer.ClientHandler;
 
 import java.io.*;
 import java.net.*;
 import java.util.Scanner;
 
+/**
+ * Client CLass
+ *
+ * @author Melina Zikou
+ *
+ */
 public class Main {
+    // username of the current user
     private static String currUsername;
+
+    // constant for printing format in the cmd
     final public static String SEPARATOR = "----------\n";
 
-
+    /**
+     * method main to start the program
+     * @param argv arguments from System.in
+     * @throws IOException
+     * @throws InterruptedException
+     */
     public static void main(String[] argv) throws IOException, InterruptedException {
         Socket s = new Socket();
-        String host = "127.0.0.1";
-        int port = 5000;
-
+        String host = "127.0.0.1"; // default IP address
+        int port = 5000; // default port
 
 
         String helpText = "Usage: java Main [-address <IP address>]\n" +
@@ -29,7 +41,12 @@ public class Main {
             boolean addressSet = false;
             boolean portSet = false;
 
+            // creation of argument options
+            // if not set, the default values are used
+
             for (int i = 0; i < argv.length; i++) {
+
+                // -address argument / used for the IP address
                 if (argv[i].equals("-address")) {
                     i++;
                     if (i >= argv.length) {
@@ -38,7 +55,9 @@ public class Main {
                     host = argv[i];
                     addressSet = true;
 
-                } else if (argv[i].equals("-port")) {
+                }
+                // -port argument / used for the port
+                else if (argv[i].equals("-port")) {
                     i++;
                     if (i >= argv.length) {
                         throw new Exception("Missing port");
@@ -47,10 +66,12 @@ public class Main {
 
                     portSet = true;
 
-                } else if (argv[i].equals("-help")) {
+                }
+                // -help argument / used for showing the available arguments
+                else if (argv[i].equals("-help")) {
                     System.out.println(helpText);
                     System.exit(1);
-                }else {
+                } else{
                     throw new Exception(helpText);
                 }
             }
@@ -61,17 +82,17 @@ public class Main {
         }
 
         try {
+            // initializing the connection
             s.connect(new InetSocketAddress(host, port));
             localAddress = s.getLocalAddress();
             remoteAddress = s.getInetAddress();
 
-
         } catch (UnknownHostException e) {
             System.err.println("Unknown host: " + host);
             System.exit(1);
-
         }
 
+        // information about the connection
         System.out.println("Connected");
         System.out.println("local: " + localAddress + " : " + s.getLocalPort());
         System.out.println("remote: " + remoteAddress);
@@ -81,6 +102,12 @@ public class Main {
         s.close();
     }
 
+    /**
+     * Handles User Input based on the Menu format
+     * @param s socket
+     * @throws IOException
+     * @throws InterruptedException
+     */
     private static void handleUserMenuInput(Socket s) throws IOException, InterruptedException {
         boolean isLogin = false;
         int state = 1;
@@ -91,10 +118,12 @@ public class Main {
         Scanner scanner = new Scanner(System.in);
         String message = "";
 
+        // if the user types exit or chooses the corresponding numbers
+        // the client connection ends
         while(!message.equalsIgnoreCase("exit") && !(message.equals("6") && state == 2) && !(message.equals("3") && state == 1)){
-            //todo main menu
 
-
+            // state 1 = main menu
+            // state 2 = user menu
             showMenu(state);
 
             message = scanner.next();
@@ -123,7 +152,6 @@ public class Main {
                     deleteEmailOption(out, in, scanner);
                 }
                 else if(message.equalsIgnoreCase("logout") || message.equals("5")){
-                    // todo logout
                     state = 1;
                 }
             }
@@ -133,24 +161,38 @@ public class Main {
         in.close();
     }
 
+    /**
+     * Read Email option selected
+     * @param out
+     * @param in
+     * @param scanner
+     * @throws IOException
+     * @throws InterruptedException
+     */
     private static void readEmailOption(PrintWriter out, BufferedReader in, Scanner scanner) throws IOException, InterruptedException {
-        ReadEmailRequest req = new ReadEmailRequest();
+        // email ID of the email to be read
         System.out.println(SEPARATOR + "Email ID: ");
         String emailID = scanner.next();
 
+        // initialize request packet
+        ReadEmailRequest req = new ReadEmailRequest();
+
+        // set the information for the request
         req.setUsername(currUsername);
         req.setEmailID(emailID);
 
+        // create and send request packet
         out.print(req.createPacket());
-
         out.flush();
 
+        // parse response packet from the server
         Command nextCommand = Command.parse(in);
-
 
         if(nextCommand.getType() == Command.CommandType.ReadEmailResponse){
             ReadEmailResponse res = (ReadEmailResponse) nextCommand;
 
+            // if the email is read successfully
+            // print out the information needed
             if(res.getErrorCode().equals(ReadEmailResponse.SUCCESS)){
 
                 StringBuilder sb = new StringBuilder();
@@ -173,20 +215,34 @@ public class Main {
         }
     }
 
+    /**
+     * Delete Email option selected
+     * @param out
+     * @param in
+     * @param scanner
+     * @throws IOException
+     * @throws InterruptedException
+     */
     private static void deleteEmailOption(PrintWriter out, BufferedReader in, Scanner scanner) throws IOException, InterruptedException {
+        // email ID of the email to be deleted
         System.out.println(SEPARATOR + "Email ID: ");
         String emailID = scanner.next();
 
+        // initialize request packet
         DeleteEmailRequest req = new DeleteEmailRequest();
 
         req.setUsername(currUsername);
         req.setEmailID(emailID);
 
+        // create and send request packet
         out.print(req.createPacket());
         out.flush();
 
+        // parse response packet from the server
         Command nextCommand = Command.parse(in);
 
+        // if the email is deleted successfully
+        // print out message
         if(nextCommand.getType() == Command.CommandType.DeleteEmailResponse){
             DeleteEmailResponse res = (DeleteEmailResponse) nextCommand;
 
@@ -205,38 +261,48 @@ public class Main {
         }
     }
 
-
+    /**
+     * Show Emails option selected
+     * @param out
+     * @param in
+     * @param scanner
+     * @throws IOException
+     * @throws InterruptedException
+     */
     private static void showEmailsOption(PrintWriter out, BufferedReader in, Scanner scanner) throws IOException, InterruptedException {
+        // initialize request packet
         ShowEmailsRequest req = new ShowEmailsRequest();
 
         req.setUsername(currUsername);
 
+        // create and send request packet
         out.print(req.createPacket());
         out.flush();
 
+        // parse response packet from the server
         Command nextCommand = Command.parse(in);
 
         System.out.println(nextCommand.getType());
+
 
         if(nextCommand.getType() == Command.CommandType.ShowEmailsResponse){
             ShowEmailsResponse res = (ShowEmailsResponse) nextCommand;
 
             System.out.println("User: " + currUsername + " emails: " + res.getMailbox().size());
 
+            // if emails can be shown successfully
+            // print out the emails stored in the user mailbox
             if(res.getErrorCode().equals(ShowEmailsResponse.SUCCESS)){
 
                 StringBuilder sb = new StringBuilder();
                 String s;
 
-                //todo tabs
-
+                // format specifiers to align emails
                 sb.append("ID %8s FROM %10d% SUBJECT\n");
                 System.out.printf("%-10s%-15s%-15s" , "ID" , "FROM", "SUBJECT");
 
                 for(Email e : res.getMailbox()){
 
-
-                    System.out.println();
                     if(e.getIsNew()){
                         System.out.printf("%-10s" , e.getId() + ". [NEW]");
                     }
@@ -245,12 +311,9 @@ public class Main {
                     }
 
                     System.out.printf("%-15s" , e.getSender());
-
                     System.out.printf("%-15s" , e.getSubject());
                     System.out.println();
-
                 }
-
             }
             else{
                 System.out.println(SEPARATOR + "Show emails Failed");
@@ -261,7 +324,16 @@ public class Main {
         }
     }
 
+    /**
+     * New Email option selected
+     * @param out
+     * @param in
+     * @param scanner
+     * @throws IOException
+     * @throws InterruptedException
+     */
     private static void newEmailOption(PrintWriter out, BufferedReader in, Scanner scanner) throws IOException, InterruptedException {
+        // information for the new email
         System.out.println(SEPARATOR + "Receiver: ");
         String receiver = scanner.next();
 
@@ -270,6 +342,8 @@ public class Main {
 
         System.out.println(SEPARATOR + "Main Body:");
 
+        // read multiple lines from System.in
+        // when an empty line is given, the scanner terminates
         String mainbody = "";
         String line  = scanner.nextLine();
 
@@ -278,19 +352,20 @@ public class Main {
             line  = scanner.nextLine();
         }
 
+        // initialize request packet
         NewEmailRequest req = new NewEmailRequest();
 
+        // set the information for the request
         req.setSender(currUsername);
         req.setReceiver(receiver);
         req.setSubject(subject);
-
-
         req.setMainbody(mainbody);
 
+        // create and send request packet
         out.print(req.createPacket());
         out.flush();
 
-
+        // parse response packet from the server
         Command nextCommand = Command.parse(in);
 
         if(nextCommand.getType() == Command.CommandType.NewEmailResponse){
@@ -311,90 +386,106 @@ public class Main {
         }
     }
 
-
+    /**
+     * Login option selected
+     * @param out
+     * @param in
+     * @param scanner
+     * @return true if the user login is successful
+     *         false otherwise
+     * @throws IOException
+     * @throws InterruptedException
+     */
     private static boolean doLogin(PrintWriter out, BufferedReader in, Scanner scanner) throws IOException, InterruptedException {
-        System.out.println(SEPARATOR +
-                            "Type your username:" );
+        // Username and password of the user to be logged in
+        System.out.println(SEPARATOR + "Type your username:" );
         String username = scanner.next();
 
-        System.out.println(SEPARATOR +
-                            "Type your password:");
+        System.out.println(SEPARATOR + "Type your password:");
         String password = scanner.next();
 
-        if(validateUser(username, password)){
-            LoginRequest req = new LoginRequest();
+        // initialize request packet
+        LoginRequest req = new LoginRequest();
 
-            req.setUsername(username);
-            req.setPassword(password);
+        // set the information for the request
+        req.setUsername(username);
+        req.setPassword(password);
 
-            out.print(req.createPacket());
-            out.flush();
+        // create and send request packet
+        out.print(req.createPacket());
+        out.flush();
 
-            Command nextCommand = Command.parse(in);
+        // parse response packet from the server
+        Command nextCommand = Command.parse(in);
 
-            if(nextCommand.getType() == Command.CommandType.LoginResponse){
-                LoginResponse res = (LoginResponse) nextCommand;
+        if(nextCommand.getType() == Command.CommandType.LoginResponse){
+            LoginResponse res = (LoginResponse) nextCommand;
 
-                if(res.getErrorCode().equals(LoginResponse.SUCCESS)){
-                    System.out.println(SEPARATOR +
-                                        "You are connected as " + username);
-                    currUsername = username;
-                    return true;
-                }
-                else{
-                    System.out.println(SEPARATOR +
-                                        "User Login Failed");
-                }
+            if(res.getErrorCode().equals(LoginResponse.SUCCESS)){
+                System.out.println(SEPARATOR + "You are connected as " + username);
+                currUsername = username;
+                return true;
             }
-            else{
-                System.out.println(SEPARATOR +
-                                    "Unexpected Response.");
-            }
+            else{System.out.println(SEPARATOR + "User Login Failed");}
         }
+        else{System.out.println(SEPARATOR + "Unexpected Response.");}
 
         return false;
     }
 
+    /**
+     * Register (Signup) Option selected
+     * @param out
+     * @param in
+     * @param scanner
+     * @throws IOException
+     * @throws InterruptedException
+     */
     private static void registerOption(PrintWriter out, BufferedReader in, Scanner scanner) throws IOException, InterruptedException {
-        System.out.println(SEPARATOR +
-                            "Type your username:");
+        // Username and password of the user to be registered
+        System.out.println(SEPARATOR + "Type your username:");
         String username = scanner.next();
 
-        System.out.println(SEPARATOR +
-                            "Type your password");
+        System.out.println(SEPARATOR + "Type your password");
         String password = scanner.next();
 
-        if(validateUser(username, password)){
+        // validate username ([A-Z]* @ [A-Z]*.[A-Z]*)
+        if(validateUser(username)){
+            // initialize request packet
             RegisterRequest req = new RegisterRequest();
 
+            // set the information for the request
             req.setUsername(username);
             req.setPassword(password);
 
+            // create and send request packet
             out.print(req.createPacket());
             out.flush();
 
+            // parse response packet from the server
             Command nextCommand = Command.parse(in);
 
             if(nextCommand.getType() == Command.CommandType.RegisterResponse){
                 RegisterResponse res = (RegisterResponse) nextCommand;
 
                 if(res.getErrorCode().equals(RegisterResponse.SUCCESS)){
-                    System.out.println(SEPARATOR +
-                                        "User created Successfully" );
+                    System.out.println(SEPARATOR + "User created Successfully" );
                 }
                 else{
-                    System.out.println(SEPARATOR +
-                                        "User creation Failed");
+                    System.out.println(SEPARATOR + "User creation Failed");
                 }
             }
             else{
-                System.out.println(SEPARATOR +
-                                    "Unexpected Response.");
+                System.out.println(SEPARATOR + "Unexpected Response.");
             }
         }
     }
 
-
+    /**
+     * Shows menu 1 if the user is not logged in
+     *            2 otherwise
+     * @param state
+     */
     public static void showMenu(int state){
         if(state == 1){
             System.out.println("==========\n" +
@@ -415,7 +506,13 @@ public class Main {
         }
     }
 
-    private static boolean validateUser(String username, String password) {
+    /**
+     * makes sure the username is of the correct form
+     * @param username username of the user
+     * @return true if correct
+     *         false otherwise
+     */
+    private static boolean validateUser(String username) {
 
         if(username.contains("@")){
             String domain = username.substring(username.indexOf("@"));
@@ -429,3 +526,7 @@ public class Main {
         return false;
     }
 }
+
+// todo add users
+// todo subject correct parsing
+// todo comments

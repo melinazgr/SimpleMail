@@ -3,6 +3,12 @@ package Mail;
 import java.io.BufferedReader;
 import java.io.IOException;
 
+/**
+ * handles Show Emails request
+ *
+ * @author Melina Zikou
+ *
+ */
 public class ShowEmailsRequest extends Command {
     private String username;
 

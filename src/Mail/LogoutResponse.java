@@ -3,6 +3,12 @@ package Mail;
 import java.io.BufferedReader;
 import java.io.IOException;
 
+/**
+ * handles logout response
+ *
+ * @author Melina Zikou
+ *
+ */
 public class LogoutResponse extends Command {
     final public static String COMMANDNAME = "RESPONSE:LOGOUT";
     final public static String ERROR = "ERRORCODE:";
@@ -15,12 +21,11 @@ public class LogoutResponse extends Command {
 
     @Override
     public CommandType getType() {
-        return null;
+        return CommandType.LogoutResponse;
     }
 
     @Override
     public void parsePacket(BufferedReader in) throws IOException {
-
     }
 
     @Override

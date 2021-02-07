@@ -3,11 +3,16 @@ package Mail;
 import java.io.BufferedReader;
 import java.io.IOException;
 
+/**
+ * handles Read Email response
+ *
+ * @author Melina Zikou
+ *
+ */
 public class ReadEmailResponse extends Command{
     private String errorCode;
     private String errorMessage;
     private Email email;
-
 
     final public static String COMMANDNAME = "RESPONSE:READ";
     final public static String ERROR = "ERRORCODE:";
@@ -16,7 +21,6 @@ public class ReadEmailResponse extends Command{
     final public static String MAINBODYSIZE = "SIZE:";
 
     final public static String EMAIL = "EMAILINFO:";
-
 
     final public static String SUCCESS = "SUCCESS"; //read email ok
     final public static String FAIL = "FAIL"; // read email failure
@@ -28,25 +32,24 @@ public class ReadEmailResponse extends Command{
         this.errorMessage = errorMessage;
     }
 
-
     public String getErrorCode() {
         return errorCode;
-    }
-
-    public String getErrorMessage() {
-        return errorMessage;
-    }
-
-    public Email getEmail() {
-        return email;
     }
 
     public void setErrorCode(String errorCode) {
         this.errorCode = errorCode;
     }
 
+    public String getErrorMessage() {
+        return errorMessage;
+    }
+
     public void setErrorMessage(String errorMessage) {
         this.errorMessage = errorMessage;
+    }
+
+    public Email getEmail() {
+        return email;
     }
 
     public void setEmail(Email email) {
@@ -100,7 +103,6 @@ public class ReadEmailResponse extends Command{
         sb.append(ERROR + errorCode + "\n");
 
         sb.append(EMAIL + "\n");
-
         sb.append(this.email.getId() + "\n");
         sb.append(this.email.getSender() + "\n");
         sb.append(this.email.getSubject() + "\n");
