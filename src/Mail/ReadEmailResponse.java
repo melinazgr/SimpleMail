@@ -13,11 +13,7 @@ public class ReadEmailResponse extends Command{
     final public static String ERROR = "ERRORCODE:";
     final public static String END = "ENDRESPONSE";
 
-    final public static String ID = "ID:";
-    final public static String FROM = "FROM:";
-    final public static String RECEIVER = "RECEIVER:";
-    final public static String SUBJECT = "SUBJECT:";
-    final public static String MAINBODY = "MAINBODY:";
+    final public static String EMAIL = "EMAILINFO:";
 
 
     final public static String SUCCESS = "SUCCESS"; //read email ok
@@ -68,25 +64,27 @@ public class ReadEmailResponse extends Command{
             if (line.startsWith(ERROR)) {
                 this.errorCode = line.substring(ERROR.length());
             }
-            if (line.startsWith(RECEIVER)) {
-                this.email.setReceiver(line.substring(RECEIVER.length()));
-            }
-            if (line.startsWith(ID)) {
-                this.email.setId(line.substring(ID.length()));
-            }
-            if (line.startsWith(FROM)) {
-                this.email.setSender( line.substring(FROM.length()));
-            }
-            if (line.startsWith(SUBJECT)) {
-                this.email.setSubject(line.substring(SUBJECT.length()));
-            }
-            if (line.startsWith(MAINBODY)) {
-                this.email.setMainbody(line.substring(MAINBODY.length()));
+            else if(line.startsWith(EMAIL)){
+                Email e = new Email();
+
+                line = (String) in.readLine();
+                e.setId(line);
+
+                line = (String) in.readLine();
+                e.setSender(line);
+
+                line = (String) in.readLine();
+                e.setSubject(line);
+
+                line = (String) in.readLine();
+                e.setMainbody(line);
+
+
+                this.email = e;
             }
 
             line = (String) in.readLine();
         }
-
     }
 
     @Override
@@ -95,11 +93,15 @@ public class ReadEmailResponse extends Command{
 
         sb.append(COMMANDNAME + '\n');
         sb.append(ERROR + errorCode + "\n");
-        sb.append(ID + email.getId() + "\n");
-        sb.append(FROM + email.getSender() + "\n");
-        sb.append(SUBJECT + email.getSubject() + "\n");
-        sb.append(MAINBODY+ email.getMainbody() + "\n");
-        sb.append(END);
+
+        sb.append(EMAIL + "\n");
+
+        sb.append(this.email.getId() + "\n");
+        sb.append(this.email.getSender() + "\n");
+        sb.append(this.email.getSubject() + "\n");
+        sb.append(this.email.getMainbody() + "\n");
+
+        sb.append(END + "\n");
 
         return sb.toString();
     }

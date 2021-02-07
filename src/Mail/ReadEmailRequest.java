@@ -40,7 +40,7 @@ public class ReadEmailRequest extends Command {
             if(line.startsWith(USERNAME)){
                 this.username = line.substring(USERNAME.length());
             }
-            if(line.startsWith(EMAIL)){
+            else if(line.startsWith(EMAIL)){
                 this.emailID = line.substring(EMAIL.length());
             }
 

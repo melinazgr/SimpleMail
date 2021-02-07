@@ -142,9 +142,11 @@ public class Main {
         req.setEmailID(emailID);
 
         out.print(req.createPacket());
+
         out.flush();
 
         Command nextCommand = Command.parse(in);
+
 
         if(nextCommand.getType() == Command.CommandType.ReadEmailResponse){
             ReadEmailResponse res = (ReadEmailResponse) nextCommand;
@@ -208,11 +210,9 @@ public class Main {
         req.setUsername(currUsername);
 
         out.print(req.createPacket());
-        System.out.println("Packet created");
         out.flush();
 
         Command nextCommand = Command.parse(in);
-        System.out.println("command parsed");
 
         System.out.println(nextCommand.getType());
 

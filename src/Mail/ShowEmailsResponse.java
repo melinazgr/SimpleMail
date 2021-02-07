@@ -96,6 +96,7 @@ public class ShowEmailsResponse extends Command{
         sb.append(ERROR + errorCode + "\n");
 
         sb.append(MAILCOUNT + mailbox.size() + "\n");
+
         for(Email e : mailbox){
             sb.append(e.getId() + "\n");
             sb.append(e.getSender() + "\n");

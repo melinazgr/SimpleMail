@@ -145,6 +145,23 @@ public class ClientHandler extends Thread{
         return response;
     }
 
+    private ShowEmailsResponse handleShowEmails(ShowEmailsRequest req) {
+        Account user = AccountManager.getInstance().findAccount(req.getUsername());
+        ShowEmailsResponse response = new ShowEmailsResponse();
+
+        if(user != null){
+            response.setMailbox(user.getMailbox());
+            response.setErrorCode(ShowEmailsResponse.SUCCESS);
+            System.out.println("Show emails for user: " + req.getUsername() + " #" + user.getMailbox().size());
+
+        }
+        else{
+            response.setErrorCode(ShowEmailsResponse.FAIL);
+            response.setErrorMessage("Invalid Receiver Username");
+        }
+        return response;
+    }
+
     private DeleteEmailResponse handleDeleteEmail(DeleteEmailRequest req) {
         Account user = AccountManager.getInstance().findAccount(req.getUsername());
         DeleteEmailResponse response = new DeleteEmailResponse();
@@ -167,22 +184,7 @@ public class ClientHandler extends Thread{
         return response;
     }
 
-    private ShowEmailsResponse handleShowEmails(ShowEmailsRequest req) {
-        Account user = AccountManager.getInstance().findAccount(req.getUsername());
-        ShowEmailsResponse response = new ShowEmailsResponse();
 
-        if(user != null){
-            response.setMailbox(user.getMailbox());
-            response.setErrorCode(ShowEmailsResponse.SUCCESS);
-            System.out.println("Show emails for user: " + req.getUsername() + " #" + user.getMailbox().size());
-
-        }
-        else{
-            response.setErrorCode(ShowEmailsResponse.FAIL);
-            response.setErrorMessage("Invalid Receiver Username");
-        }
-        return response;
-    }
 
     private NewEmailResponse handleNewEmail(NewEmailRequest req) {
         Account receiver = AccountManager.getInstance().findAccount(req.getReceiver());
