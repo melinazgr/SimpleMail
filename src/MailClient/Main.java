@@ -300,6 +300,7 @@ public class Main {
                 // format specifiers to align emails
                 sb.append("ID %8s FROM %10d% SUBJECT\n");
                 System.out.printf("%-10s%-15s%-15s" , "ID" , "FROM", "SUBJECT");
+                System.out.println();
 
                 for(Email e : res.getMailbox()){
 
@@ -334,11 +335,13 @@ public class Main {
      */
     private static void newEmailOption(PrintWriter out, BufferedReader in, Scanner scanner) throws IOException, InterruptedException {
         // information for the new email
+        scanner.nextLine();
+
         System.out.println(SEPARATOR + "Receiver: ");
-        String receiver = scanner.next();
+        String receiver = scanner.nextLine();
 
         System.out.println(SEPARATOR + "Subject: ");
-        String subject = scanner.next();
+        String subject = scanner.nextLine();
 
         System.out.println(SEPARATOR + "Main Body:");
 
