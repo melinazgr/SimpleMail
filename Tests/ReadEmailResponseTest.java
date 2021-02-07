@@ -15,7 +15,7 @@ class ReadEmailResponseTest {
         ReadEmailResponse res = new ReadEmailResponse();
         ArrayList<Email> mailbox = new ArrayList<>();
 
-        Email e1 = new Email("1", "foo@foo.bar", "melina@csd.gr", "Hello", "Hello world. the sky is blue.", true);
+        Email e1 = new Email("1", "foo@foo.bar", "melina@csd.gr", "Hello", "Hello world.\nthe sky is blue.", true);
 
         mailbox.add(e1);
 
@@ -36,6 +36,8 @@ class ReadEmailResponseTest {
         assertEquals(client1.getId(), e1.getId());
         assertEquals(client1.getSender(), e1.getSender());
         assertEquals(client1.getSubject(), e1.getSubject());
+        assertEquals(client1.getMainbody(), e1.getMainbody());
+
     }
 
 }

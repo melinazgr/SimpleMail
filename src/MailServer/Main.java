@@ -68,9 +68,4 @@ public class Main {
         }
 
     }
-
-    public Email newMail(){
-        Email e = new Email();
-        return e;
-    }
 }

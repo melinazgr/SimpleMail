@@ -226,27 +226,31 @@ public class Main {
             if(res.getErrorCode().equals(ShowEmailsResponse.SUCCESS)){
 
                 StringBuilder sb = new StringBuilder();
+                String s;
 
                 //todo tabs
 
-                sb.append("ID        FROM                  SUBJECT\n");
-                for(Email e : res.getMailbox()){
-                    sb.append(e.getId());
-                    sb.append(". ");
+                sb.append("ID %8s FROM %10d% SUBJECT\n");
+                System.out.printf("%-10s%-15s%-15s" , "ID" , "FROM", "SUBJECT");
 
+                for(Email e : res.getMailbox()){
+
+
+                    System.out.println();
                     if(e.getIsNew()){
-                        sb.append("[NEW]  ");
+                        System.out.printf("%-10s" , e.getId() + ". [NEW]");
                     }
                     else{
-                        sb.append("       ");
+                        System.out.printf("%-10s" , e.getId() , ".");
                     }
 
-                    sb.append(e.getSender());
-                    sb.append(e.getSubject());
-                    sb.append("\n");
+                    System.out.printf("%-15s" , e.getSender());
+
+                    System.out.printf("%-15s" , e.getSubject());
+                    System.out.println();
+
                 }
 
-                System.out.println(sb.toString());
             }
             else{
                 System.out.println(SEPARATOR + "Show emails Failed");
@@ -270,7 +274,7 @@ public class Main {
         String line  = scanner.nextLine();
 
         while(mainbody.equals("") || !line.equals("")){
-            mainbody += line;
+            mainbody += line + "\n";
             line  = scanner.nextLine();
         }
 
@@ -279,6 +283,8 @@ public class Main {
         req.setSender(currUsername);
         req.setReceiver(receiver);
         req.setSubject(subject);
+
+
         req.setMainbody(mainbody);
 
         out.print(req.createPacket());

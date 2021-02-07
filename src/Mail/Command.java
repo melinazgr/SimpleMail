@@ -132,4 +132,22 @@ public abstract class Command {
     public abstract void parsePacket(BufferedReader in) throws IOException;
 
     public abstract String createPacket();
+
+    public String readString(BufferedReader in, int size) throws IOException {
+        char[] buffer = new char[size];
+        int bytesLeft = size;
+        int offset = 0;
+
+        while (bytesLeft > 0) {
+            int read = in.read(buffer, offset, bytesLeft);
+            if (read == -1) {
+                throw new IOException("Unexpected end of data");
+            }
+
+            offset += read;
+            bytesLeft -= read;
+        }
+
+        return new String(buffer);
+    }
 }

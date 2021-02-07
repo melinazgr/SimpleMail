@@ -13,6 +13,8 @@ public class ReadEmailResponse extends Command{
     final public static String ERROR = "ERRORCODE:";
     final public static String END = "ENDRESPONSE";
 
+    final public static String MAINBODYSIZE = "SIZE:";
+
     final public static String EMAIL = "EMAILINFO:";
 
 
@@ -77,8 +79,11 @@ public class ReadEmailResponse extends Command{
                 e.setSubject(line);
 
                 line = (String) in.readLine();
-                e.setMainbody(line);
 
+                if(line.startsWith(MAINBODYSIZE)){
+                    int len = Integer.parseInt(line.substring(MAINBODYSIZE.length()));
+                    e.setMainbody(readString(in, len)) ;
+                }
 
                 this.email = e;
             }
@@ -99,7 +104,9 @@ public class ReadEmailResponse extends Command{
         sb.append(this.email.getId() + "\n");
         sb.append(this.email.getSender() + "\n");
         sb.append(this.email.getSubject() + "\n");
-        sb.append(this.email.getMainbody() + "\n");
+
+        sb.append(MAINBODYSIZE + this.email.getMainbody().length() + "\n");
+        sb.append(this.email.getMainbody());
 
         sb.append(END + "\n");
 

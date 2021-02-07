@@ -10,6 +10,7 @@ public class NewEmailRequest extends Command {
     final public static String SENDER = "SENDER:";
     final public static String RECEIVER = "RECEIVER:";
     final public static String SUBJECT = "SUBJECT:";
+    final public static String MAINBODYSIZE = "SIZE:";
     final public static String MAINBODY = "MAINBODY:";
     final public static String END = "ENDCOMMAND";
 
@@ -73,10 +74,10 @@ public class NewEmailRequest extends Command {
             else if(line.startsWith(SUBJECT)){
                 this.subject = line.substring(SUBJECT.length());
             }
-            else if(line.startsWith(MAINBODY)){
-                this.mainbody = line.substring(MAINBODY.length());
+            else if(line.startsWith(MAINBODYSIZE)){
+                int len = Integer.parseInt(line.substring(MAINBODYSIZE.length()));
+                this.mainbody = readString(in, len);
             }
-
             line = (String)in.readLine();
         }
 
@@ -88,9 +89,12 @@ public class NewEmailRequest extends Command {
                     SENDER + sender + "\n" +
                     RECEIVER + receiver + "\n" +
                     SUBJECT + subject + "\n" +
-                    MAINBODY + mainbody + "\n" +
+                    MAINBODYSIZE + mainbody.length() + "\n" +
+                    mainbody + "\n" +
                     END +  "\n";
 
         return s;
     }
+
+
 }
