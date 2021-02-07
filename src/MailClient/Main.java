@@ -202,7 +202,7 @@ public class Main {
                 sb.append("\nFROM: " + res.getEmail().getSender());
                 sb.append("\nSUBJECT: " + res.getEmail().getSubject() + "\n");
                 sb.append(SEPARATOR);
-                sb.append("\nMAIN BODY\n" + res.getEmail().getMainbody() + "\n");
+                sb.append("\nMAIN BODY\n" + SEPARATOR + res.getEmail().getMainbody() + "\n");
 
                 System.out.println(sb.toString());
             }
@@ -529,7 +529,3 @@ public class Main {
         return false;
     }
 }
-
-// todo add users
-// todo subject correct parsing
-// todo comments
