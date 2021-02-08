@@ -4,7 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 
 /**
- * handles delete email response
+ * handles delete email response.
  *
  * @author Melina Zikou
  *

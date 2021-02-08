@@ -4,7 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 
 /**
- * handles Register request
+ * handles Register request.
  *
  * @author Melina Zikou
  *

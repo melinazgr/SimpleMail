@@ -32,7 +32,7 @@ public class Main {
 
 
         String helpText = "Usage: java Main [-address <IP address>]\n" +
-                        "                 [-port]\n";
+                          "                 [-port]\n";
 
         InetAddress localAddress = null;
         InetAddress remoteAddress = null;

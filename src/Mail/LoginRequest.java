@@ -4,7 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 
 /**
- * handles login request
+ * handles login request.
  *
  * @author Melina Zikou
  *

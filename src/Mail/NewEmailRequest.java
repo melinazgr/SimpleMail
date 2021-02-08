@@ -4,7 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 
 /**
- * handles New Email request
+ * handles New Email request.
  *
  * @author Melina Zikou
  *
